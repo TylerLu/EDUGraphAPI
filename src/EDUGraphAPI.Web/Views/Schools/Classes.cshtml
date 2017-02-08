@@ -1,0 +1,165 @@
+﻿@*
+    *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+    *   * See LICENSE in the project root for license information.
+*@
+@using Microsoft.Education
+@using Microsoft.Education.Data
+@model SectionsViewModel
+@{
+    ViewBag.Title = "CLASSES";
+    var isMySections = (bool?)ViewBag.IsMySections == true;
+}
+<div class="row schools sections">
+    <div class="tophero">
+        <div class="col-md-8">
+            <div class="secondnav">
+                <a href="/schools"> All Schools</a> > @Model.School.Name
+            </div>
+            <div class="a-heading">
+                Classes
+            </div>
+        </div>
+        <div class="toptiles">
+            <div class="section-school-name">
+                @Model.School.Name
+            </div>
+            <div class="infocontainer">
+                <div class="infoheader">
+                    PRINCIPAL
+                </div>
+                <div class="infobody" title="@Model.School.PrincipalName">
+                    @Html.Raw(string.IsNullOrEmpty(Model.School.PrincipalName) ? "-" : Model.School.PrincipalName)
+                </div>
+            </div>
+            <div class="infocontainer">
+                <div class="infoheader">
+                    Grade level
+                </div>
+                <div class="infobody" title="@Model.School.LowestGrade - @Model.School.HighestGrade">
+                    @Model.School.LowestGrade - @Model.School.HighestGrade
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="col-md-6 usericon">
+                <div class="icon"></div>
+                @if (Model.UserContext.IsStudent)
+                {
+                    <div>Not Enrolled</div>
+                }
+                else
+                {
+                    <div>Not Teaching</div>
+                }
+                        
+                   
+                <div class="icon my-class"></div><div>My Class</div>
+            </div>
+            <div class="col-md-6 filterlink-container">
+                <span>FILTER:</span> <a id="filtermyclasses" class="filterlink selected" data-type="myclasses">My Classes</a> | <a id="filterclasses" class="filterlink " data-type="allclasses">All Classes</a>
+            </div>
+        </div>
+        <br style="clear:both;" />
+    </div>
+
+    <div class="myclasses-container tiles-root-container">
+        <div id="allclasses" class="tiles-secondary-container">
+            <div class="section-tiles">
+                @{
+                    var sections = Model.Sections;
+                    if (sections == null || sections.Value == null || sections.Value.Count() == 0)
+                    {
+                        <div class="nodata"> There is no data available for this page at this time.</div>
+                    }
+                    else
+                    {
+                        <div class="content clearfix">
+                            @foreach (var s in sections.Value)
+                            {
+                                <div class="tile-container">
+                                    @Tile(s, Model.IsMy(s))
+                                    @TileDetail(s)
+                                </div>
+                            }
+                        </div>
+                        <div class="seemore @(string.IsNullOrEmpty(sections.NextLink) ? "hideitem" : string.Empty)" id="see-more">
+                            <input id="nextlink" type="hidden" value="@sections.NextLink" />
+                            <input id="schoolid" type="hidden" value="@Model.School.ObjectId" />
+                            <span>See More</span>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div id="myclasses" class="tiles-secondary-container">
+            <div class="section-tiles">
+                @{
+                    var mySections = Model.MySections;
+                    if (mySections == null || mySections.Count() == 0)
+                    {
+                        <div class="nodata"> There is no data available for this page at this time.</div>
+                    }
+                    else
+                    {
+                        <div class="content clearfix">
+                            @foreach (var s in mySections)
+                            {
+                                <div class="tile-container">
+                                    @Tile(s, true)
+                                    @TileDetail(s)
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper Tile(Section section, bool isMine)
+{
+    if (isMine)
+    {
+        <a class="mysectionlink" href="@Url.Action("ClassDetails", new { schoolId = Model.School.ObjectId, sectionId = section.ObjectId })">
+            <div class="tile">
+                <h5>@(section.DisplayName)</h5>
+                <h2>@(section.CombinedCourseNumber)</h2>
+            </div>
+        </a>
+    }
+    else
+    {
+        <div class="tile">
+            <h5>@(section.DisplayName)</h5>
+            <h2>@(section.CombinedCourseNumber)</h2>
+        </div>
+    }
+}
+@helper TileDetail(Section section)
+{
+    <div class="detail">
+        <h5>Course Id:</h5>
+        <h6>@(section.CourseId)</h6>
+        <h5>Description:</h5>
+        <h6>@(section.CourseDescription)</h6>
+        <h5>Teachers:</h5>
+        @foreach (var teacher in section.Teachers)
+        {
+            <h6>@(teacher.DisplayName)</h6>
+        }
+        <h5>Term Name:</h5>
+        <h6>
+            @(section.TermName)
+        </h6>
+        <h5>Start/Finish Date:</h5>
+        <h6>
+            <span id="termdate">@(string.IsNullOrEmpty(section.TermStartDate) ? "" : Convert.ToDateTime(section.TermStartDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
+            <span> - </span>
+            <span id="termdate">@(string.IsNullOrEmpty(section.TermEndDate) ? "" : Convert.ToDateTime(section.TermEndDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
+        </h6>
+        <h5>Period:</h5>
+        <h6>@(section.Period)</h6>
+    </div>
+}
+@Scripts.Render("~/bundles/sections")

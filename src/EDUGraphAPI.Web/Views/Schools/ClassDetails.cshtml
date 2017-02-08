@@ -1,0 +1,232 @@
+﻿@*
+    *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+    *   * See LICENSE in the project root for license information.
+*@
+@model SectionDetailsViewModel
+@{
+    ViewBag.Title = "Class Details";
+    var teachersList = Model.Section.Teachers.ToList();
+}
+<div class="row schools class-details">
+    <div class="tophero">
+        <div class="container">
+            <div class="col-md-6 secondnav">
+                <a href="/schools"> All Schools</a>
+                > @Html.ActionLink(Model.School.Name, "Classes", null, new { schoolId = Model.School.ObjectId }, null)
+                > @Model.Section.CourseName
+            </div>
+        </div>
+        <div class="container">
+            <div class="a-heading ">@ViewBag.Title</div>
+            <div class="b-title">@Model.Section.CourseNumber | @Model.Section.DisplayName</div>
+        </div>
+        <div class="container coursedetail">
+            <div class="col-md-6">
+                <span>Course Name:</span> @Model.Section.CourseName
+                <br />
+                <span>Description:</span> @Model.Section.CourseDescription
+                <br />
+                <span>Period:</span> @Model.Section.Period
+                <br />
+                <span>Term Name:</span> @Model.Section.TermName
+                <br />
+                <span>Start/Finish Date:</span>
+                <span id="termdate">@(string.IsNullOrEmpty(Model.Section.TermStartDate) ? "" : Convert.ToDateTime(Model.Section.TermStartDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
+                <span id="termdate-separator"> - </span>
+                <span id="termdate">@(string.IsNullOrEmpty(Model.Section.TermEndDate) ? "" : Convert.ToDateTime(Model.Section.TermEndDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
+            </div>
+            <div class="col-md-6">
+                @for (var i = 0; i < teachersList.Count(); i++)
+                {
+                    <span>Teacher:</span> @teachersList[i].DisplayName
+                    if (i < teachersList.Count() - 1)
+                    {
+                        <br />
+                    }
+                }
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div class="students">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#students"><span>Students</span></a></li>
+            <li><a data-toggle="tab" href="#documents" id="classdoclink"><span>Class Documents</span></a></li>
+            <li><a data-toggle="tab" href="#conversations"><span>Conversations</span></a></li>
+            <li><a data-toggle="tab" href="#seatingchart"><span>SEATING CHART</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="students" class="tab-pane fade in active">
+                @if (Model.Section == null || Model.Section.Students == null || Model.Section.Students.Count() == 0)
+                {
+                    <div class="nodata"> There is no data available for this page at this time.</div>
+                }
+                else
+                {
+                    <table class="table  table-green table-student tablesorter" id="studentsTable">
+                        <thead>
+                            <tr class="table-green-header">
+                                <th class="tdleft">student name</th>
+                                <th>grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var stu in Model.Section.Students)
+                            {
+                                <tr class="tr-content">
+                                    <td><img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.O365UserId })" /> @stu.DisplayName </td>
+                                    <td>@stu.EducationGrade</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div id="documents" class="tab-pane fade">
+                @if (Model.DriveItems == null || Model.DriveItems.Count() == 0)
+                {
+                    <div class="nodata"> There is no data available for this page at this time.</div>
+                }
+                else
+                {
+                    <table id="studoc" class="table  table-green table-student tablesorter">
+                        <thead>
+                            <tr class="table-green-header">
+                                <th class="border-holder"></th>
+                                <th class="space-holder left"></th>
+                                <th class="tdleft">document name</th>
+                                <th class="tdleft">modified</th>
+                                <th class="tdleft">modified by</th>
+                                <th class="space-holder right"></th>
+                            </tr>
+                            <tr class="blanktr">
+                                <th colspan="5"></th>
+                            </tr>
+                        </thead>
+
+                    <tbody>
+                        @foreach (var doc in Model.DriveItems)
+                        {
+                            <tr class="tr-content">
+                                <td class="border-holder"></td>
+                                <td class="space-holder left"></td>
+                                <td>
+                                    <a target="_blank" href="@doc.WebUrl">@doc.Name</a>
+                                </td>
+                                <td>@(@doc.LastModifiedDateTime.HasValue ? @doc.LastModifiedDateTime.Value.ToString("yyyy-MM-ddTHH:mm:sszzz") : "")</td>
+                                <td>@doc.LastModifiedBy.User.DisplayName</td>
+                                <td class="space-holder right"></td>
+                            </tr>
+                        }
+                    </tbody>
+</table>
+                }
+                <span class="see-more"><a href="@Model.SeeMoreFilesUrl" target="_blank">See More</a></span>
+                <br style="clear:both" />
+            </div>
+            <div id="conversations" class="tab-pane fade">
+                @if (Model.Conversations == null || Model.Conversations.Count() == 0)
+                {
+                    <div class="nodata"> There is no data available for this page at this time.</div>
+                }
+                else
+                {
+                    <table id="stuconv" class="table  table-green table-student">
+                        <tbody>
+                            @foreach (var con in Model.Conversations)
+                            {
+                                var url = string.Format("{0}&ConvID={1}",
+                                    Model.SeeMoreConversationsUrl,
+                                    Uri.EscapeDataString(con.Id).Replace("_", "%2B").Replace("-", "%2f"));
+                                <tr class="tr-content">
+                                    <td class="border-holder"></td>
+                                    <td class="space-holder left"></td>
+                                    <td>
+                                        <a target="_blank" href="@Html.Raw(url)">@con.Topic</a>
+                                    </td>
+                                    <td class="space-holder right"></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                <span class="see-more"><a target="_blank" href="@Model.SeeMoreConversationsUrl">See More</a></span>
+                <br style="clear:both" />
+            </div>
+
+            <div id="seatingchart" class="tab-pane fade ">
+                <div class="left" id="dvleft">
+                    @if (!Model.IsStudent)
+                    {
+                        <div class="tip"> To assign seats for each student, drag and drop student profile icons below onto the seating map to the right.</div>
+                    }
+                    else
+                    {
+                        var style = string.Format("background-color:{0}", Model.MyFavoriteColor);
+                        <div class="assignseat tip"><div class="greenicon" style="@style"></div>Your assigned seat </div>
+                    }
+                    <ul id="lstproducts">
+                        @foreach (var stu in Model.Section.Students)
+                        {
+                            var hide = stu.Position == 0 ? "hideitem" : "";
+                            <li id="@stu.O365UserId"><img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.O365UserId })" /> <span class="disname"> @stu.DisplayName </span> <span class="seated @hide">seated ✓</span> </li>
+                        }
+                    </ul>
+                    <div id="hidtiles" class="hideitem">
+                        @foreach (var stu in Model.Section.Students)
+                        {
+                            var containerClass = "unsaved";
+                            var style = "";
+                            if (stu.Position != 0)
+                            {
+                                containerClass = "white";
+                                if (Model.O365UserId == stu.O365UserId)
+                                {
+                                    containerClass = "green";
+                                    style = string.Format("background-color:{0}", Model.MyFavoriteColor);
+                                }
+                            }
+                            <div class="deskcontainer @containerClass" style="@style" position="@stu.Position" userid="@stu.O365UserId">
+                                <div class="deskclose"><img src="/Images/close.png"></div>
+                                <div class="deskicon">
+                                    <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.O365UserId })" />
+                                </div>
+                                <div class="stuname">@stu.DisplayName</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="right" id="dvright">
+                    @{
+                        string color = "";
+                        if (!Model.IsStudent)
+                        {
+                            color = "background-color:" + Model.MyFavoriteColor;
+                        }
+                    }
+                    <div class="teacherdesk" style="@color">Teacher's desk</div>
+                    <div>
+                        <div id="graybg">
+                            @for (var i = 1; i <= 36; i++)
+                            {
+                                <div class="desktile" position="@i"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div id="dvedit" class="dvedit">
+                    @if (!Model.IsStudent)
+                    {
+                        <img id="imgedit" src="~/Images/edit.png" />
+                        <img id="imgsave" src="~/Images/save.png" />
+                        <img id="imgcancel" src="~/Images/cancel.png" />
+                    }
+                </div>
+                <br style="clear:both" />
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" name="hidSectionid" id="hidSectionid" value="@Model.Section.ObjectId" />
+@*<div id="saveResult"><div>Seating map changes saved.</div></div>*@
+@Scripts.Render("~/bundles/classdetail")

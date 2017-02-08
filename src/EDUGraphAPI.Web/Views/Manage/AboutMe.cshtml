@@ -1,0 +1,73 @@
+﻿@*
+    *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+    *   * See LICENSE in the project root for license information.
+*@
+@model AboutMeViewModel
+@{
+    ViewBag.Title = "About Me";
+}
+<div class="container ">
+<h2>                
+    About Me
+</h2>
+
+    <div class="margin-top-12 margin-btm-12 aboutme">
+        @{ 
+            var aadUserId = User.GetObjectIdentifier();
+            string userPhoto = "";
+            if (!string.IsNullOrEmpty(aadUserId))
+            {
+                userPhoto = string.Format("<img src='/Photo/UserPhoto/{0}'/>", aadUserId);
+            }
+        }
+        <b>Username:</b><br /> @User.Identity.GetFullName() @Html.Raw(userPhoto)
+    </div>
+    <div class="margin-top-12 margin-btm-12">
+        @{ 
+            string displayRole = "";
+            if (User.IsInRole(Constants.Roles.Admin))
+            {
+                displayRole = "Admin";
+            }else if (User.IsInRole(Constants.Roles.Faculty))
+            {
+                displayRole = "Teacher";
+            }else if (User.IsInRole(Constants.Roles.Student))
+            {
+                displayRole = "Student";
+            }
+        }
+        <b>Logged in as:</b><br /> @displayRole
+    </div>
+    @if (Model.ShowFavoriteColor)
+    {
+    <div class="margin-btm-12">
+        <b>Favorite Color:</b> 
+        @using (Html.BeginForm("UpdateFavoriteColor", "Manage"))
+        {
+            @ColorsDropdown(Model.MyFavoriteColor, Model.FavoriteColors)
+            <input type="submit"  value="Save"/>
+            @Html.Raw(TempData["saveresult"])
+        }
+    </div>
+    }
+    <div class="margin-btm-12 ">
+        <b>Classes:</b> 
+        <br />
+        <div >
+            @foreach (var item in Model.Groups)
+            {
+                @item <br />
+            }
+        </div>
+    </div>
+</div>
+@helper ColorsDropdown(string myFavoriteColor, List<ColorEntity> favoriteColors)
+{
+    <select name="favoritecolor">
+        @foreach (ColorEntity color in favoriteColors)
+        {
+            string selected = myFavoriteColor == color.Value ? "selected" : "";
+            <option value="@color.Value" @selected>@color.DisplayName</option>
+        }
+    </select>
+}
