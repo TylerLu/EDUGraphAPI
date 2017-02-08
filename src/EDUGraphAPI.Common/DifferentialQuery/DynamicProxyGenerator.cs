@@ -43,9 +43,6 @@ namespace EDUGraphAPI.DifferentialQuery
                 typeof(IDeltaEntity).GetMethod("get_" + ModifiedPropertyNamesPropertyName, BindingFlags.Public | BindingFlags.Instance));
 
             var isDeletedBuilder = DefineProperty(typeBuilder, IsDeletedPropertyName, typeof(bool));
-            //var attributeBuilder = new CustomAttributeBuilder(
-            //    typeof(JsonPropertyAttribute).GetConstructor(new[] { typeof(string) }), new[] { "aad.isDeleted" });
-            //    isDeletedBuilder.SetCustomAttribute(attributeBuilder);
 
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
