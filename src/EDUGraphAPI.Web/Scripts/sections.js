@@ -40,7 +40,7 @@ $(document).ready(function () {
         tilesContainer.removeClass(tilesContainer.attr("class").replace("tiles-root-container", "")).addClass(filterType + "-container");
     });
 
-    $(".sections .allclasses-container .seemore span").click(function () {
+    $("#see-more  span").click(function () {
         var element = $(this);
         if (element.hasClass("disabled") || element.hasClass("nomore")) {
             return;

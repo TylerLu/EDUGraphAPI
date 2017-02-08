@@ -46,6 +46,7 @@ namespace EDUGraphAPI.Web.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            cookieServie.ClearCookies();
             return View();
         }
 

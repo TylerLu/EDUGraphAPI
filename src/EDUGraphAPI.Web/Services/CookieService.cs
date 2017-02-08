@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿/*   
+ *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+ *   * See LICENSE in the project root for license information.  
+ */
 using System.Web;
 
 namespace EDUGraphAPI.Web.Services
@@ -24,6 +24,10 @@ namespace EDUGraphAPI.Web.Services
                 return string.Empty;
             return email.Value;
         }
-
+        public void ClearCookies()
+        {
+            HttpContext.Current.Response.Cookies.Get(UsernameCookie).Expires = new DateTime(1970, 1, 1);
+            HttpContext.Current.Response.Cookies.Get(EmailCookie).Expires = new DateTime(1970, 1, 1);
+        }
     }
 }

@@ -1,6 +1,7 @@
-﻿using EDUGraphAPI.Data;
-using EDUGraphAPI.Migrations;
-using System.Data.Entity;
+﻿/*   
+ *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+ *   * See LICENSE in the project root for license information.  
+ */
 using System.IdentityModel.Claims;
 using System.Web.Helpers;
 using System.Web.Mvc;
@@ -17,9 +18,6 @@ namespace EDUGraphAPI.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            //Below code will recreate the database.
-            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<ApplicationDbContext, Configuration>());
-            //Database.SetInitializer<ApplicationDbContext>(new EDUGraphAPIDBInitializer());
             AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
         }
     }

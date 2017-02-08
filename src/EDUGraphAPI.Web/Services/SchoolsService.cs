@@ -8,7 +8,6 @@ using EDUGraphAPI.Web.ViewModels;
 using Microsoft.Education;
 using Microsoft.Education.Data;
 using Microsoft.Graph;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
