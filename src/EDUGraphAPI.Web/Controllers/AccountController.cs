@@ -328,7 +328,7 @@ namespace EDUGraphAPI.Web.Controllers
             var userContext = await applicationService.GetUserContextAsync();
             if (userContext != null && userContext.User != null)
             {
-                SetCookiesForO365User(userContext.User.FullName, userContext.User.Email);
+                SetCookiesForO365User(userContext.User.FullName, userContext.User.O365Email);
             }
             return RedirectToLocal(returnUrl);
 
