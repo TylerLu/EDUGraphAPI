@@ -67,7 +67,12 @@ namespace EDUGraphAPI.Web.Controllers
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
-                case SignInStatus.Success:
+                case SignInStatus.Success:                   
+                    ApplicationUser user=await applicationService.GetUserByEmailAsync(model.Email);
+                    if (user != null && !string.IsNullOrEmpty(user.O365Email))
+                    {
+                        SetCookiesForO365User(user.FullName, user.O365Email);
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

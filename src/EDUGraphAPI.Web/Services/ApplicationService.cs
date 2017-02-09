@@ -79,6 +79,16 @@ namespace EDUGraphAPI.Web.Services
         }
 
         /// <summary>
+        /// Get user by email.
+        /// </summary>
+        public async Task<ApplicationUser> GetUserByEmailAsync(string email)
+        {
+            return await dbContext.Users               
+                .Where(i => i.Email == email)
+                .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
         /// Update current user's favorite color
         /// </summary>
         public void UpdateUserFavoriteColor(string color)
