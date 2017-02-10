@@ -121,7 +121,11 @@ namespace EDUGraphAPI.Web.Controllers
             var localUser = userManager.FindByEmail(user.Mail);
             if (localUser == null)
             {
-                return View();
+                foreach (var modelValue in ModelState.Values)
+                {
+                    modelValue.Errors.Clear();
+                }
+                return View(model);
             }
             var tenantId = User.GetTenantId();            
             if (localUser.O365UserId.IsNotNullAndEmpty())

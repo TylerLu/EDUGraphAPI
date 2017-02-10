@@ -343,7 +343,7 @@ This project encapsulates the **[Schools REST API](https://msdn.microsoft.com/en
 
 ASP.NET Identity uses [Entity Framework Code First](https://msdn.microsoft.com/en-us/library/jj193542(v=vs.113).aspx) to implement all of its persistence mechanisms. Package [Microsoft.AspNet.Identity.EntityFramework](https://www.nuget.org/packages/Microsoft.AspNet.Identity.EntityFramework/) is consumed for this. 
 
-In this sample, **ApplicationDbContext** is created for access to a SQL Server CE Database. It inherited from **IdentityDbContext** which is defined in the NuGet package mentioned above.
+In this sample, **ApplicationDbContext** is created for access to the database. It inherited from **IdentityDbContext** which is defined in the NuGet package mentioned above.
 
 Below are the important Data Models (and their important properties) that used in this sample:
 
