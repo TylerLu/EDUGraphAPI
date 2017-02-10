@@ -170,7 +170,7 @@ Open and Debug the sample locally
      * **AzureWebJobsDashboard**: create a new storage account and use its connection string.
      * **AzureWebJobsStorage**: use the same connection string as **AzureWebJobsDashboard**.
    * **App Settings**:
-     * **ida:ClientId**: use the Client Id of the app registration your created earlier.
+     * **ida:ClientId**: use the Client Id of the app registration you created earlier.
 
    Set **EDUGraphAPI.SyncData** as StartUp project, and press F5. 
 
@@ -237,9 +237,9 @@ Open and Debug the sample locally
 
    * **Source Code Manual Integration**: choose **false**, since you are deploying from your own fork.
 
-   * **Client Id**: use the Client Id of the app registration your created earlier.
+   * **Client Id**: use the Client Id of the app registration you created earlier.
 
-   * **Client Secret**: use the Key value of the app registration your created earlier.
+   * **Client Secret**: use the Key value of the app registration you created earlier.
 
    * **Bing Map Key**: use the key of Bing Map you got earlier. This setting is optional.
 
