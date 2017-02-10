@@ -38,7 +38,7 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 ## Prerequisites
 
 **Deploying and running this sample requires**:
-* An Azure subscription with permissions to register a new application, and deploy the web app and SQL Server database
+* An Azure subscription with permissions to register a new application, and deploy the web app.
 * An O365 Education tenant with Microsoft School Data Sync enabled
     * One of the following browsers: Edge, Internet Explorer 9, Safari 5.0.6, Firefox 5, Chrome 13, or a later version of one of these browsers.
       Additionally: Developing/running this sample locally requires the following:  
@@ -136,11 +136,11 @@ Create a key to enable Bing Maps API features in the app:
 
    Click **Save**.
 
-   > Note: this step configure the certification used by a Web Job. Check **Application Authentication Flow** section for more details.
+   > Note: this step configures the certification used by a Web Job. Check **Application Authentication Flow** section for more details.
 
 ## Build and debug locally
 
-This project can be opened with the edition of Visual Studion 2015 you already have, or download and install the the Community edition to run, build and/or develop this application locally.
+This project can be opened with the edition of Visual Studio 2015 you already have, or download and install the Community edition to run, build and/or develop this application locally.
 
 - [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409)
 
@@ -152,12 +152,10 @@ Open and Debug the sample locally
 
    ![](Images/web-app-config.png)
 
-   * **Connection Strings**: 
-     * **DefaultConnection**: you may create a local SQL Server database or use the one created in the Azure.
    * **App Settings**: 
      * **BingMapKey**: use the key of Bing Map you got earlier. This setting is optional.
-     * **ida:ClientId**: use the Client Id of the app registration your created earlier.
-     * **ida:ClientSecret**: use the Key value of the app registration your created earlier.
+     * **ida:ClientId**: use the Client Id of the app registration you created earlier.
+     * **ida:ClientSecret**: use the Key value of the app registration you created earlier.
      * **SourceCodeRepositoryURL**: use the repository URL of your fork.
 
    Set **EDUGraphAPI.Web** as StartUp project, and press F5. 
@@ -171,7 +169,6 @@ Open and Debug the sample locally
    * **Connection Strings**:
      * **AzureWebJobsDashboard**: create a new storage account and use its connection string.
      * **AzureWebJobsStorage**: use the same connection string as **AzureWebJobsDashboard**.
-     * **DefaultConnection**: use the same connection string used above for the Web.config.
    * **App Settings**:
      * **ida:ClientId**: use the Client Id of the app registration your created earlier.
 
@@ -235,8 +232,6 @@ Open and Debug the sample locally
      > Click it you will get more details, like storage account is already in other resource group/subscription.
      >
      > In this case, please use another name.
-
-   * **Sql Administrator Login Password**: please DO use a strong password.
 
    * **Source Code Repository URL**: replace <YOUR REPOSITORY> with the repository name of your fork.
 
@@ -348,7 +343,7 @@ This project encapsulates the **[Schools REST API](https://msdn.microsoft.com/en
 
 ASP.NET Identity uses [Entity Framework Code First](https://msdn.microsoft.com/en-us/library/jj193542(v=vs.113).aspx) to implement all of its persistence mechanisms. Package [Microsoft.AspNet.Identity.EntityFramework](https://www.nuget.org/packages/Microsoft.AspNet.Identity.EntityFramework/) is consumed for this. 
 
-In this sample, **ApplicationDbContext** is created for access to a SQL Server Database. It inherited from **IdentityDbContext** which is defined in the NuGet package mentioned above.
+In this sample, **ApplicationDbContext** is created for access to a SQL Server CE Database. It inherited from **IdentityDbContext** which is defined in the NuGet package mentioned above.
 
 Below are the important Data Models (and their important properties) that used in this sample:
 
@@ -394,9 +389,9 @@ The first 2 flows (Local Login/O365 Login) enable users to login in with either 
 
 This flow shows how an administrator logs into the system and performs administrative operations.
 
-After logging into the app with an office 365 account,the administrator will be asked to link to local account. This step is not required and can be skipped. 
+After logging into the app with an office 365 account, the administrator will be asked to link to local account. This step is not required and can be skipped. 
 
-As we mentioned ealier, the web app is a mutli-tenant app which uses some application permissions, so an administrator of the tenant should consent the tenant first.  
+As we mentioned earlier, the web app is a multi-tenant app which uses some application permissions, so an administrator of the tenant should consent the tenant first.  
 
 This flow is implemented in AdminController. 
 
@@ -667,7 +662,7 @@ If the value is true, we will redirect the user to the authentication endpoint i
 
 **LinkedOrO365UsersOnlyAttribute**
 
-The is another authorization filter. With it we can only allow linked users or Office 365 users to visit the protected controllers/actions.
+This is another authorization filter. With it we can only allow linked users or Office 365 users to visit the protected controllers/actions.
 
 ~~~c#
 protected override bool AuthorizeCore(HttpContextBase httpContext)
@@ -735,7 +730,7 @@ So far, It is only used on the **SchoolsController**.
   | GetAuthenticationResultAsync           | Get an AuthenticationResult from the specified authorization code |
   | GetAppOnlyAccessTokenForDaemonAppAsync | Get an App-only access token for a daemon app |
 
-  Most of the methods above have a argument called permission. Its type is `Permissions`, an Enum type with two defined values:
+  Most of the methods above have an argument called permission. Its type is `Permissions`, an Enum type with two defined values:
 
   * `Delegated`: the client accesses the web API as the signed-in user.
   * `Application`: the client accesses the web API directly as itself (no user context). This type of permission requires administrator consent.
@@ -752,7 +747,7 @@ So far, It is only used on the **SchoolsController**.
 
 * **`Controllers.LinkController`**:  implements the **Local/O365 Login Authentication Flow**. Please check [Authentication Flows](#authentication-flows) section for more details.
 
-* **`Controllers.SchoolsController`**: contains actions to show schools and classes. `SchoolsService` class is mainly used by this controller. Pleae check [Office 365 Education API](#office-365-education-api) section for more details.
+* **`Controllers.SchoolsController`**: contains actions to show schools and classes. `SchoolsService` class is mainly used by this controller. Please check [Office 365 Education API](#office-365-education-api) section for more details.
 
 * **`Infrastructure.EduAuthorizeAttribute`**: allow the web app to redirect the current user to the proper login page in our multi-authentication-method scenario. Please check [Filters](#filters) section for more details.
 
