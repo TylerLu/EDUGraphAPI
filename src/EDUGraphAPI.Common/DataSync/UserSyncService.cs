@@ -62,15 +62,14 @@ namespace EDUGraphAPI.DataSync
                 try
                 {
                     await SyncOrganizationUsersAsync(org);
+                    dbContext.SaveChanges();
+                    await WriteLogAsync($"All the changes were saved.");
                 }
                 catch (Exception ex)
                 {
                     await WriteLogAsync($"Failed to sync users of {org.Name}. Error: {ex.Message}");
                 }
             }
-
-            dbContext.SaveChanges();
-            await WriteLogAsync($"All the changes were saved.");
         }
 
         private async Task SyncOrganizationUsersAsync(Organization org)
