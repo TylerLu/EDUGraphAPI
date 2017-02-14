@@ -779,18 +779,15 @@ So far, It is only used on the **SchoolsController**.
 * **`Functions`**: contains the `SyncUsersAsync` method which is executed regularly to sync users data.
 * **`Program`**: contains the `Main` method which configure and start the WebJob host.
 
-## [Optional]Build and debug the WebJob locally
+## [Optional] Build and debug the WebJob locally
 
 Debug the **EDUGraphAPI.SyncData**:
 
 1. Create a storage account in Azure and get the connection string.
-
    > Note: 
-   >
    > - Local debugging with Azure Storage Emulator will be supported after [Azure WebJobs SDK](https://github.com/Azure/azure-webjobs-sdk)  V2 related. Please refer to [Support Azure Storage Emulator](https://github.com/Azure/azure-webjobs-sdk/issues/53) for more details.
    > - It is **not** recommended to local debugging while published web job is running in the azure with the same storage account. Please check [this question]([What happened when using same Storage account for multiple Azure WebJobs (dev/live)?](http://stackoverflow.com/questions/42020647/what-happened-when-using-same-storage-account-for-multiple-azure-webjobs-dev-li)) for more details.
-
-
+   
 2. Configure the **App.config**:
 
    ![](Images/webjob-app-config.png)
