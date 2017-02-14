@@ -144,42 +144,19 @@ This project can be opened with the edition of Visual Studio 2015 you already ha
 
 - [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409)
 
-Open and Debug the sample locally
+Debug the **EDUGraphAPI.Web**:
 
-1. Debug the **EDUGraphAPI.Web**:
-
-   Configure the **Web.config**. 
+1. Configure **appSettings** in the **Web.config**. 
 
    ![](Images/web-app-config.png)
 
-   * **App Settings**: 
-     * **BingMapKey**: use the key of Bing Map you got earlier. This setting is optional.
-     * **ida:ClientId**: use the Client Id of the app registration you created earlier.
-     * **ida:ClientSecret**: use the Key value of the app registration you created earlier.
-     * **SourceCodeRepositoryURL**: use the repository URL of your fork.
+   - **BingMapKey**: use the key of Bing Map you got earlier. This setting is optional.
+   - **ida:ClientId**: use the Client Id of the app registration you created earlier.
+   - **ida:ClientSecret**: use the Key value of the app registration you created earlier.
+   - **SourceCodeRepositoryURL**: use the repository URL of your fork.
 
-   Set **EDUGraphAPI.Web** as StartUp project, and press F5. 
 
-2. Debug the **EDUGraphAPI.SyncData**:
-
-   Create a storage account in Azure and get the connection string.
-
-   > Note: 
-   > * Local debugging with Azure Storage Emulator will be supported after [Azure WebJobs SDK](https://github.com/Azure/azure-webjobs-sdk)  V2 related. Please refer to [Support Azure Storage Emulator](https://github.com/Azure/azure-webjobs-sdk/issues/53) for more details.
-   > * It is **not** recommended to local debugging while published web job is running in the azure with the same storage account. Please check [this question]([What happened when using same Storage account for multiple Azure WebJobs (dev/live)?](http://stackoverflow.com/questions/42020647/what-happened-when-using-same-storage-account-for-multiple-azure-webjobs-dev-li)) for more details.
-
-   Configure the **App.config**:
-
-   ![](Images/webjob-app-config.png)
-
-   * **Connection Strings**:
-     * **AzureWebJobsDashboard**: use the connection string you got in previous step.
-     * **AzureWebJobsStorage**: use the connection string you got in previous step.
-   * **App Settings**:
-     * **ida:ClientId**: use the Client Id of the app registration you created earlier.
-
-   Set **EDUGraphAPI.SyncData** as StartUp project, and press F5. 
-
+2. Set **EDUGraphAPI.Web** as StartUp project, and press F5. 
 
 ## Deploy the sample to Azure
 
@@ -502,7 +479,7 @@ public async Task<TenantInfo> GetTenantAsync(string tenantId)
 
 Note that in app registration settings, permissions for each Graph API are configured separately:
 
-![](Images/aad-app-permissions.png) 
+![](/Images/aad-create-app-06.png) 
 
 ### Office 365 Education API
 
@@ -801,6 +778,30 @@ So far, It is only used on the **SchoolsController**.
 
 * **`Functions`**: contains the `SyncUsersAsync` method which is executed regularly to sync users data.
 * **`Program`**: contains the `Main` method which configure and start the WebJob host.
+
+## [Optional]Build and debug the WebJob locally
+
+Debug the **EDUGraphAPI.SyncData**:
+
+1. Create a storage account in Azure and get the connection string.
+
+   > Note: 
+   >
+   > - Local debugging with Azure Storage Emulator will be supported after [Azure WebJobs SDK](https://github.com/Azure/azure-webjobs-sdk)  V2 related. Please refer to [Support Azure Storage Emulator](https://github.com/Azure/azure-webjobs-sdk/issues/53) for more details.
+   > - It is **not** recommended to local debugging while published web job is running in the azure with the same storage account. Please check [this question]([What happened when using same Storage account for multiple Azure WebJobs (dev/live)?](http://stackoverflow.com/questions/42020647/what-happened-when-using-same-storage-account-for-multiple-azure-webjobs-dev-li)) for more details.
+
+
+2. Configure the **App.config**:
+
+   ![](Images/webjob-app-config.png)
+
+   - **Connection Strings**:
+     - **AzureWebJobsDashboard**: use the connection string you got in previous step.
+     - **AzureWebJobsStorage**: use the connection string you got in previous step.
+   - **App Settings**:
+     - *ida:ClientId**: use the Client Id of the app registration you created earlier.
+
+3. Set **EDUGraphAPI.SyncData** as StartUp project, and press F5. 
 
 ##Questions and comments
 
