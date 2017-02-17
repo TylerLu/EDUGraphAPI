@@ -180,11 +180,11 @@
                             if (stu.Position != 0)
                             {
                                 containerClass = "white";
-                                if (!string.IsNullOrEmpty(stu.FavoriteColor))
-                                {
-                                    containerClass = "green";
-                                    style = string.Format("background-color:{0}", stu.FavoriteColor);
-                                }
+                            }
+                            if (!string.IsNullOrEmpty(stu.FavoriteColor))
+                            {
+                                containerClass += " green";
+                                style = string.Format("background-color:{0}", stu.FavoriteColor);
                             }
                             <div class="deskcontainer @containerClass" style="@style" position="@stu.Position" userid="@stu.O365UserId">
                                 <div class="deskclose"><img src="/Images/close.png"></div>
