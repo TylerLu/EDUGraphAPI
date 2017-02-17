@@ -7,12 +7,12 @@ School data is kept in sync in O365 Education tenants by [Microsoft School Data 
 **Table of contents**
 * [Sample Goals](#sample-goals)
 * [Prerequisites](#prerequisites)
-* [Register the application](#register-the-application-in-azure-active-directory)
+* [Register the application in Azure Active Directory](#register-the-application-in-azure-active-directory)
 * [Build and debug locally](#build-and-debug-locally)
 * [Deploy the sample to Azure](#deploy-the-sample-to-azure)
 * [Understand the code](#understand-the-code)
 * [[Optional] Build and debug the WebJob locally](#optional-build-and-debug-the-webjob-locally)
-* [Questions and comments](##questions-and-comments)
+* [Questions and comments](#questions-and-comments)
 * [Contributing](#contributing)
 
 ## Sample Goals
@@ -807,7 +807,7 @@ Debug the **EDUGraphAPI.SyncData**:
 
 ##Contributing
 
-We encourage you to contribute to our samples. For guidelines on how to proceed, see [our contribution guide](/OfficeDev/O365-EDU-AspNetMVC-Samples/blob/master/Contributing.md).
+We encourage you to contribute to our samples. For guidelines on how to proceed, see [our contribution guide](/Contributing.md).
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
