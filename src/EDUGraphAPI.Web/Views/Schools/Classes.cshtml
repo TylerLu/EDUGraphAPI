@@ -41,7 +41,7 @@
             </div>
         </div>
         <div>
-            <div class="col-md-6 usericon">
+            <div class="col-md-4 usericon">
                 <div class="icon"></div>
                 @if (Model.UserContext.IsStudent)
                 {
@@ -55,7 +55,15 @@
                    
                 <div class="icon my-class"></div><div>My Class</div>
             </div>
-            <div class="col-md-6 filterlink-container">
+          
+            <div class="col-md-3 filterlink-container">
+
+                <div class="search-container ">
+                    <input type="text" placeholder="Search"  class="txtsearch"/>
+                    <button type="submit" id="btnsearch" title="Search" data-bi-dnt="" tabindex="40" class="btnsubmit">
+                        
+                    </button>
+                </div>
                 <span>FILTER:</span> <a id="filtermyclasses" class="filterlink selected" data-type="myclasses">My Classes</a> | <a id="filterclasses" class="filterlink " data-type="allclasses">All Classes</a>
             </div>
         </div>
@@ -69,13 +77,13 @@
                     var sections = Model.Sections;
                     if (sections == null || sections.Value == null || sections.Value.Count() == 0)
                     {
-                        <div class="nodata"> There is no data available for this page at this time.</div>
+                        <div class="nodata"> No classes in this school.</div>
                     }
                     else
                     {
                         <div class="content clearfix">
                             @foreach (var s in sections.Value)
-                            {
+                        {
                                 <div class="tile-container">
                                     @Tile(s, Model.IsMy(s))
                                     @TileDetail(s)
@@ -94,16 +102,24 @@
         <div id="myclasses" class="tiles-secondary-container">
             <div class="section-tiles">
                 @{
-                    var mySections = Model.MySections;
-                    if (mySections == null || mySections.Count() == 0)
-                    {
-                        <div class="nodata"> There is no data available for this page at this time.</div>
+                        var mySections = Model.MySections;
+                        if (mySections == null || mySections.Count() == 0)
+                        {
+                            if (Model.UserContext.IsStudent)
+                            {
+                            <div class="nodata"> Not enrolled in any classes.</div>
+                        }
+                        else
+                        {
+                            <div class="nodata"> Not teaching any classes.</div>
+                        }
+
                     }
                     else
                     {
                         <div class="content clearfix">
                             @foreach (var s in mySections)
-                            {
+                    {
                                 <div class="tile-container">
                                     @Tile(s, true)
                                     @TileDetail(s)
