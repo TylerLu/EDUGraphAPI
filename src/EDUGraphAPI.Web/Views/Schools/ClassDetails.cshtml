@@ -103,7 +103,6 @@
                                 <th colspan="5"></th>
                             </tr>
                         </thead>
-
                         <tbody>
                             @foreach (var doc in Model.DriveItems)
                             {
@@ -228,5 +227,4 @@
     </div>
 </div>
 <input type="hidden" name="hidSectionid" id="hidSectionid" value="@Model.Section.ObjectId" />
-@*<div id="saveResult"><div>Seating map changes saved.</div></div>*@
 @Scripts.Render("~/bundles/classdetail")
