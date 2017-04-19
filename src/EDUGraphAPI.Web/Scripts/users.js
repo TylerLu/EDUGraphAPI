@@ -1,4 +1,4 @@
-﻿/*   
+/*   
  *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
  *   * See LICENSE in the project root for license information.  
  */
@@ -66,7 +66,7 @@ $(document).ready(function () {
                     if (!(value instanceof Array) || value.length == 0) {
                         return;
                     }
-                    content.html("");
+                    
                     $.each(value, function (i, user) {
                         var userHtml = '<div class="element ' + (user.ObjectType == "Teacher" ? "teacher-bg" : "student-bg") + '">' +
                                            '<div class="userimg">' +
@@ -100,7 +100,7 @@ $(document).ready(function () {
         var start = (targetPageNum - 1) * 12;
         var end = targetPageNum * 12;
         var elements = content.children();
-        elements.slice(start, end).fadeIn("slow", function () {
+        elements.hide().slice(start, end).fadeIn("slow", function () {
             var img = $(this).find("img[realheader]");
             img.attr("src", img.attr("realheader"));
         });
