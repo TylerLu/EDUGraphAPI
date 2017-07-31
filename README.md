@@ -45,24 +45,6 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
     * Visual Studio 2015 (any edition), [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409) is available for free.
     * Familiarity with C#, .NET Web applications, JavaScript programming and web services.
 
-**Optional configuration**:
-
-A feature in this sample demonstrates calling the Bing Maps API which requires a key to enable the Bing Maps feature. 
-
-Create a key to enable Bing Maps API features in the app:
-
-1. Open [https://www.bingmapsportal.com/](https://www.bingmapsportal.com/) in your web browser and sign in.
-
-2. Click  **My account** -> **My keys**.
-
-3. Create a **Basic** key, select **Public website** as the application type.
-
-4. Copy the **Key** and save it. 
-
-   ![](Images/bing-maps-key.png)
-
-   > **Note:** The key is used in the app configuration steps for debug and deploy.
-
 ## Register the application in Azure Active Directory
 
 1. Sign into the new azure portal: [https://portal.azure.com/](https://portal.azure.com/).
@@ -150,7 +132,6 @@ Debug the **EDUGraphAPI.Web**:
 
    ![](Images/web-app-config.png)
 
-   - **BingMapKey**: use the key of Bing Map you got earlier. This setting is optional.
    - **ida:ClientId**: use the Client Id of the app registration you created earlier.
    - **ida:ClientSecret**: use the Key value of the app registration you created earlier.
    - **SourceCodeRepositoryURL**: use the repository URL of your fork.
@@ -223,8 +204,6 @@ Debug the **EDUGraphAPI.Web**:
    * **Client Id**: use the Client Id of the app registration you created earlier.
 
    * **Client Secret**: use the Key value of the app registration you created earlier.
-
-   * **Bing Map Key**: use the key of Bing Map you got earlier. This setting is optional.
 
    * Check **I agree to the terms and conditions stated above**.
 

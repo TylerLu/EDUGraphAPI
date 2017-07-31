@@ -21,6 +21,7 @@ namespace EDUGraphAPI.Web.Controllers
     {
         private ApplicationService applicationService;
         private ApplicationDbContext dbContext;
+        private int pageSize = 12;
 
         public SchoolsController(ApplicationService applicationService, ApplicationDbContext dbContext)
         {
@@ -50,7 +51,7 @@ namespace EDUGraphAPI.Web.Controllers
         {
             var userContext = await applicationService.GetUserContextAsync();
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, 12);
+            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, pageSize);
             return View(model);
         }
 
@@ -60,7 +61,7 @@ namespace EDUGraphAPI.Web.Controllers
         {
             var userContext = await applicationService.GetUserContextAsync();
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, 12, nextLink);
+            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, pageSize, nextLink);
             var sections = new List<Section>(model.Sections.Value);
             sections.AddRange(model.MySections);
             foreach (var section in sections)
@@ -82,7 +83,7 @@ namespace EDUGraphAPI.Web.Controllers
         public async Task<ActionResult> Users(string schoolId)
         {
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolUsersAsync(schoolId, 12);
+            var model = await schoolsService.GetSchoolUsersAsync(schoolId, pageSize);
             return View(model);
         }
 
@@ -91,7 +92,7 @@ namespace EDUGraphAPI.Web.Controllers
         public async Task<JsonResult> UsersNext(string schoolId, string nextLink)
         {
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolUsersAsync(schoolId, 12, nextLink);
+            var model = await schoolsService.GetSchoolUsersAsync(schoolId, pageSize, nextLink);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
@@ -100,7 +101,7 @@ namespace EDUGraphAPI.Web.Controllers
         public async Task<JsonResult> StudentsNext(string schoolId, string nextLink)
         {
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolStudentsAsync(schoolId, 12, nextLink);
+            var model = await schoolsService.GetSchoolStudentsAsync(schoolId, pageSize, nextLink);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
@@ -109,7 +110,7 @@ namespace EDUGraphAPI.Web.Controllers
         public async Task<JsonResult> TeachersNext(string schoolId, string nextLink)
         {
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolTeachersAsync(schoolId, 12, nextLink);
+            var model = await schoolsService.GetSchoolTeachersAsync(schoolId, pageSize, nextLink);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
