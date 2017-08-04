@@ -474,7 +474,9 @@ In the sample, the **Microsoft.Education** Class Library project was created to 
 // https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-all-schools
 public async Task<School[]> GetSchoolsAsync()
 {
-    return await HttpGetArrayAsync<School>("administrativeUnits?api-version=beta");
+    var schools = await HttpGetArrayAsync<School>("administrativeUnits");
+    return schools.Where(c => c.EducationObjectType == "School").ToArray();
+
 }
 ~~~
 
@@ -482,7 +484,8 @@ public async Task<School[]> GetSchoolsAsync()
 // https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-a-school
 public Task<School> GetSchoolAsync(string objectId)
 {
-    return HttpGetObjectAsync<School>($"administrativeUnits/{objectId}?api-version=beta");
+     return HttpGetObjectAsync<School>($"administrativeUnits/{objectId}");
+
 }
 ~~~
 
@@ -492,26 +495,26 @@ public Task<School> GetSchoolAsync(string objectId)
 // https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-sections-within-a-school
 public Task<Section[]> GetAllSectionsAsync(string schoolId)
 {
-    var relativeUrl = $"/groups?api-version=beta&$expand=members&$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'";
-    return HttpGetArrayAsync<Section>(relativeUrl);
+            var relativeUrl = $"groups?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'";
+            return HttpGetArrayAsync<Section>(relativeUrl, top, nextLink);
+
 }
 ~~~
 
 ```c#
 public async Task<Section[]> GetMySectionsAsync(string schoolId)
 {
-    var me = await HttpGetObjectAsync<SectionUser>("/me?api-version=1.5");
-    var sections = await GetAllSectionsAsync(schoolId);
+ 	var sections = await GetMySectionsAsync(true);
     return sections
-        .Where(i => i.Members.Any(j => j.Email == me.Email))
-        .ToArray();
+                .Where(i => i.SchoolId == schoolId)
+                .ToArray();
 }
 ```
 ```c#
 // https://msdn.microsoft.com/office/office365/api/section-rest-operations#get-a-section
 public async Task<Section> GetSectionAsync(string sectionId)
 {
-    return await HttpGetObjectAsync<Section>($"groups/{sectionId}?api-version=beta&$expand=members");
+    return await HttpGetObjectAsync<Section>($"groups/{sectionId}?$expand=members");
 }
 ```
 Below are some screenshots of the sample app that show the education data.
