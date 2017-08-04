@@ -782,12 +782,12 @@ Debug the **EDUGraphAPI.SyncData**:
 
 3. Set **EDUGraphAPI.SyncData** as StartUp project, and press F5. 
 
-##Questions and comments
+## Questions and comments
 
 * If you have any trouble running this sample, please [log an issue](https://github.com/OfficeDev/O365-EDU-AspNetMVC-Samples/issues).
 * Questions about GraphAPI development in general should be posted to [Stack Overflow](http://stackoverflow.com/questions/tagged/office-addins). Make sure that your questions or comments are tagged with [ms-graph-api]. 
 
-##Contributing
+## Contributing
 
 We encourage you to contribute to our samples. For guidelines on how to proceed, see [our contribution guide](/CONTRIBUTING.md).
 
