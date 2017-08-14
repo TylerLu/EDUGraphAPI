@@ -46,7 +46,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Classes
+        // GET: /Schools/{Id of a school}/Classes
         public async Task<ActionResult> Classes(string schoolId)
         {
             var userContext = await applicationService.GetUserContextAsync();
@@ -56,7 +56,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Classes/Next
+        // GET: /Schools/{Id of a school}/Classes/Next
         public async Task<JsonResult> ClassesNext(string schoolId, string nextLink)
         {
             var userContext = await applicationService.GetUserContextAsync();
@@ -79,7 +79,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Users
+        // GET: /Schools/{Id of a school}/Users
         public async Task<ActionResult> Users(string schoolId)
         {
             var schoolsService = await GetSchoolsServiceAsync();
@@ -88,7 +88,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Users/Next
+        // GET: /Schools/{Id of a school}/Users/Next
         public async Task<JsonResult> UsersNext(string schoolId, string nextLink)
         {
             var schoolsService = await GetSchoolsServiceAsync();
@@ -97,7 +97,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Students/Next
+        // GET: /Schools/{Id of a school}/Students/Next
         public async Task<JsonResult> StudentsNext(string schoolId, string nextLink)
         {
             var schoolsService = await GetSchoolsServiceAsync();
@@ -106,7 +106,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Teachers/Next
+        // GET: /Schools/{Id of a school}/Teachers/Next
         public async Task<JsonResult> TeachersNext(string schoolId, string nextLink)
         {
             var schoolsService = await GetSchoolsServiceAsync();
@@ -115,7 +115,7 @@ namespace EDUGraphAPI.Web.Controllers
         }
 
         //
-        // GET: /Schools/48D68C86-6EA6-4C25-AA33-223FC9A27959/Classes/6510F0FC-53B3-4D9B-9742-84C9C8FA2BE4
+        // GET: /Schools/{Id of a school}/Classes/6510F0FC-53B3-4D9B-9742-84C9C8FA2BE4
         public async Task<ActionResult> ClassDetails(string schoolId, string sectionId)
         {
             var userContext = await applicationService.GetUserContextAsync();
