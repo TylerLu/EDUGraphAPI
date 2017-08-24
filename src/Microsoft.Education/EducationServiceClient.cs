@@ -133,7 +133,7 @@ namespace Microsoft.Education
         }
 
         /// <summary>
-        /// You can get the current logged in user and check if that user is a student.
+        /// You can get the current logged in user and check if that user is a teacher.
         /// Reference URL: https://msdn.microsoft.com/office/office365/api/student-rest-operations#get-current-user.
         /// </summary>
         /// <returns></returns>
