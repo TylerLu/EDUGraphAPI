@@ -513,7 +513,8 @@ max-width: 140px;
    list-style-type:none;    
  
 }
-.demo-helper-control .body > ul > li  >p.link{margin:0 0 6px 21px;}
+.demo-helper-control .body > ul > li  ul p.title{margin-top:6px;}
+.demo-helper-control .body > ul > li  >p.link{margin:0 0 0 21px;}
 .demo-helper-control .body > ul > li.collaspe p.title{background-image:url('/images/collaspe-arrow.png');}
 .demo-helper-control .body > ul > li  >p.title{
     cursor:pointer;
