@@ -14,9 +14,18 @@
             <ul>
                 @foreach (var link in Model.Links)
                 {
-                    <li>
+                    <li class="collaspe">
                         <p class="title">@link.Title</p>
-                        <p><a href="@link.Url" target="_blank">@link.Url</a></p>
+                        <p class="link"><a href="@link.Url" target="_blank">@link.Url</a></p>
+                        <ul>
+                            @foreach(var method in link.Methods)
+                            {
+                                <li>
+                                    <p class="title">@method.Title</p>
+                                    <p class="desc">@method.Description</p>
+                                </li>
+                            }
+                        </ul>
                     </li>
                 }
             </ul>

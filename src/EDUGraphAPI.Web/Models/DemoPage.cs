@@ -22,8 +22,20 @@ namespace EDUGraphAPI.Web.Models
 
     public class Link
     {
+        public Link()
+        {
+            this.Methods = new HashSet<Method>();
+        }
         public string Title { get; set; }
 
         public string Url { get; set; }
+
+        public ISet <Method> Methods { get; set; }
+    }
+
+    public class Method
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
     }
 }

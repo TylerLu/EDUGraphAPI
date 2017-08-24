@@ -21,4 +21,10 @@ $(document).ready(function () {
     });
 
     $('.message-container').fadeOut(5000);
+
+    $(".demo-helper-control .body >ul> li >p").click(function (e) {
+        if (e.target.tagName != "A") {
+            $(this).parent().toggleClass("collaspe");
+        }
+    });
 });

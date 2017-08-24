@@ -329,6 +329,7 @@
     <Content Include="Images\cancel.png" />
     <Content Include="Images\ClassDetailsTiles-bg.jpg" />
     <Content Include="Images\close.png" />
+    <Content Include="Images\collaspe-arrow.png" />
     <Content Include="Images\contaerbg.gif" />
     <Content Include="Images\conversation_icon.png" />
     <Content Include="Images\conversation_icon_hover.png" />
@@ -337,6 +338,7 @@
     <Content Include="Images\document_icon_hover.png" />
     <Content Include="Images\document_icon_selected.png" />
     <Content Include="Images\edit.png" />
+    <Content Include="Images\expand-arrow.png" />
     <Content Include="Images\global_pagination_first.png" />
     <Content Include="Images\global_pagination_last.png" />
     <Content Include="Images\global_pagination_next.png" />
