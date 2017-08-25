@@ -4,57 +4,42 @@
   {
     "controller": "schools",
     "action": "index",
-    "links": [
+    "functions": [
       {
-        "title": "Controller",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs"
-      },
-      {
-        "title": "View",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Views/Schools/Index.cshtml"
-      },
-      {
-        "title": "ApplicationService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
-        "methods": [
+        "title": "Get school inormation",
+        "tab": "",
+        "files": [
           {
-            "title": "GetUserContextAsync",
-            "description": "Get logined user information."
-          }
-        ]
-      },
-      {
-        "title": "SchoolsService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",
-        "methods": [
-          {
-            "title": "GetSchoolsViewModelAsync",
-            "description": "Get school view model."
-          }
-        ]
-      },
-      {
-        "title": "EducationServiceClient",
-        "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
-        "methods": [
-          {
-            "title": "GetStudentAsync",
-            "description": "You can get the current logged in user and check if that user is a student."
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
           },
           {
-            "title": "GetTeacherAsync",
-            "description": "You can get the current logged in user and check if that user is a teacher."
-          },
-          {
-            "title": "GetSchoolsAsync",
-            "description": "Get all schools that exist in the Azure Active Directory tenant."
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/abc.cs",
+            "tab": "",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
           }
+
         ]
-      },
-      {
-        "title": "SchoolsViewModel",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Models/SchoolsViewModel.cs"
       }
+     
     ]
   },
   {
@@ -170,32 +155,212 @@
   {
     "controller": "schools",
     "action": "classdetails",
-    "links": [
+    "functions": [
       {
-        "title": "Controller",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs"
+        "title": "Get school inormation",
+        "tab": "",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "tab": "",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          }
+
+        ]
       },
       {
-        "title": "View",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Views/Schools/ClassDetails.cshtml"
+        "title": "Get school inormation",
+        "tab": "#students",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "tab": "",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          }
+
+        ]
       },
       {
-        "title": "ApplicationService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs"
+        "title": "Get students inormation",
+        "tab": "#conversations",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "method of students",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "tab": "",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          }
+
+        ]
       },
       {
-        "title": "SchoolsService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs"
+        "title": "Get school inormation",
+        "tab": "#documents",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "tab": "",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          }
+
+        ]
       },
       {
-        "title": "SectionDetailsViewModel",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Models/SectionDetailsViewModel.cs"
-      },
-      {
-        "title": "SeatingViewModel",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Models/SeatingViewModel.cs"
+        "title": "Get school inormation",
+        "tab": "#seatingchart",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "tab": "",
+            "methods": [
+              {
+                "title": "method 1",
+                "description": "desc1"
+              },
+              {
+                "title": "method 2",
+                "description": "desc2"
+              }
+            ]
+          }
+
+        ]
       }
     ]
+    //,
+    //"links": [
+    //  {
+    //    "title": "Controller",
+    //    "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+    //    "tab": "students",
+    //    "methods": [
+    //      {
+    //        "title": "method 1()",
+    //        "description": "desc1"
+    //      }
+    //    ]
+    //  },
+    //  {
+    //    "title": "View",
+    //    "url": "/blob/master/src/EDUGraphAPI.Web/Views/Schools/ClassDetails.cshtml"
+    //  },
+    //  {
+    //    "title": "ApplicationService",
+    //    "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs"
+    //  },
+    //  {
+    //    "title": "SchoolsService",
+    //    "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs"
+    //  },
+    //  {
+    //    "title": "SectionDetailsViewModel",
+    //    "url": "/blob/master/src/EDUGraphAPI.Web/Models/SectionDetailsViewModel.cs"
+    //  },
+    //  {
+    //    "title": "SeatingViewModel",
+    //    "url": "/blob/master/src/EDUGraphAPI.Web/Models/SeatingViewModel.cs"
+    //  }
+    //]
   },
   {
     "controller": "account",

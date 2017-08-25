@@ -499,7 +499,7 @@ max-width: 140px;
 .demo-helper-control.collapsed .body {
     display: none;
 }
-
+.demo-helper-control p.tab{display:none;}
 .demo-helper-control .body .desc {
     font-family: 'Helvetica Neue LT Std Roman';
 }
@@ -513,6 +513,7 @@ max-width: 140px;
    list-style-type:none;    
  
 }
+.demo-helper-control ul.files{margin-left: 18px;}
 .demo-helper-control .body > ul > li  ul p.title{margin-top:6px;}
 .demo-helper-control .body > ul > li  >p.link{margin:0 0 0 21px;}
 .demo-helper-control .body > ul > li.collaspe p.title{background-image:url('/images/collaspe-arrow.png');}

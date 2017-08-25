@@ -11,18 +11,26 @@
         <p class="desc">Code sample links for this page:</p>
         @if (Model != null)
         {
-            <ul>
-                @foreach (var link in Model.Links)
+            <ul class="functions">
+                @foreach (var function in Model.Functions)
                 {
                     <li>
-                        <p class="title">@link.Title</p>
-                        <p class="link"><a href="@link.Url" target="_blank">@link.Url</a></p>
-                        <ul>
-                            @foreach(var method in link.Methods)
+                        <p class="title">@function.Title</p>
+                        <p class="tab">@function.Tab</p>
+                        <ul class="files">
+                            @foreach(var file in function.Files)
                             {
-                                <li>
-                                    <p class="title">@method.Title</p>
-                                    <p class="desc">@method.Description</p>
+                                <li>                                    
+                                    <p class="title">@file.Url</p>
+                                    <ul class="methods">
+                                        @foreach (var method in file.Methods)
+                                        { 
+                                            <li>
+                                                <p class="title">@method.Title</p>
+                                                <p class="desc">@method.Description</p>
+                                            </li>
+                                        }
+                                    </ul>
                                 </li>
                             }
                         </ul>
