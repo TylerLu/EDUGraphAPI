@@ -6,36 +6,58 @@
     "action": "index",
     "functions": [
       {
-        "title": "Get school inormation",
+        "title": "Get schools inormation",
         "tab": "",
         "files": [
           {
             "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
             "methods": [
               {
-                "title": "method 1",
-                "description": "desc1"
+                "title": "Index",
+                "description": "Index controller."
               },
               {
-                "title": "method 2",
-                "description": "desc2"
+                "title": "GetSchoolsServiceAsync",
+                "description": "Initialize school services."
               }
             ]
           },
           {
-            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/abc.cs",
-            "tab": "",
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
             "methods": [
               {
-                "title": "method 1",
-                "description": "desc1"
+                "title": "GetUserContextAsync",
+                "description": "Get current user from context."
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",
+            "methods": [
+              {
+                "title": "GetSchoolsViewModelAsync",
+                "description": "Get view model of schools page."
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetStudentAsync",
+                "description": "You can get the current logged in user and check if that user is a student."
               },
               {
-                "title": "method 2",
-                "description": "desc2"
+                "title": "GetTeacherAsync",
+                "description": "You can get the current logged in user and check if that user is a teacher."
+              },
+              {
+                "title": "GetSchoolsAsync",
+                "description": "Get all schools that exist in the Azure Active Directory tenant. "
               }
             ]
           }
+
 
         ]
       }
@@ -45,57 +67,72 @@
   {
     "controller": "schools",
     "action": "classes",
-    "links": [
+    "functions": [
       {
-        "title": "Controller",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs"
-      },
-      {
-        "title": "View",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Views/Schools/Classes.cshtml"
-      },
-      {
-        "title": "ApplicationService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
-        "methods": [
+        "title": "Get classes inormation",
+        "tab": "",
+        "files": [
           {
-            "title": "GetUserContextAsync",
-            "description": "Get logined user information."
-          }
-        ]
-      },
-      {
-        "title": "SchoolsService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",
-        "methods": [
-          {
-            "title": "GetSectionsViewModelAsync",
-            "description": "Get view model for classes page."
-          }
-        ]
-      },
-      {
-        "title": "EducationServiceClient",
-        "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
-        "methods": [
-          {
-            "title": "GetSchoolAsync",
-            "description": "Get a school by using the id."
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "Classes",
+                "description": "Classes controller."
+              }
+            ]
           },
           {
-            "title": "GetMySectionsAsync",
-            "description": "Get my sections within a school."
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
+            "methods": [
+              {
+                "title": "GetUserContextAsync",
+                "description": "Get current user from context."
+              }
+            ]
           },
           {
-            "title": "GetAllSectionsAsync",
-            "description": "Get sections within a school."
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetSchoolAsync",
+                "description": "Get a school by using the id."
+              }
+            ]
           }
         ]
       },
       {
-        "title": "SectionsViewModel",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Models/SectionsViewModel.cs"
+        "title": "Get my classes inormation",
+        "tab": "filtermyclasses",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetMySectionsAsync",
+                "description": "Get my classes within a school."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Get all classes inormation",
+        "tab": "filterclasses",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetAllSectionsAsync",
+                "description": "Get classes within a school."
+              }
+            ]
+          }
+        ]
       }
+
+
     ]
   },
   {
@@ -138,7 +175,7 @@
       },
       {
         "title": "SchoolsService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",       
+        "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",
         "methods": [
           {
             "title": "GetSchoolUsersAsync",
@@ -150,7 +187,93 @@
         "title": "SchoolUsersViewModel",
         "url": "/blob/master/src/EDUGraphAPI.Web/Models/SchoolUsersViewModel.cs"
       }
+    ],
+    "functions": [
+      {
+        "title": "Get all students and teachers inormation",
+        "tab": "",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/SchoolsController.cs",
+            "methods": [
+              {
+                "title": "Users",
+                "description": "Users controller"
+              },
+              {
+                "title": "GetSchoolsServiceAsync",
+                "description": "Initialize school services."
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",
+            "methods": [
+              {
+                "title": "GetSchoolUsersAsync",
+                "description": "Get users, teachers and students of the specified school."
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetSchoolAsync",
+                "description": "Get a school by using the id."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Get all students and teachers inormation",
+        "tab": "filterall",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetMembersAsync",
+                "description": "Get users within a school."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Get all students inormation",
+        "tab": "filterstudnet",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetStudentsAsync",
+                "description": "Get students within a school."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Get all teachers inormation",
+        "tab": "filterteacher",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetTeachersAsync",
+                "description": "Get teachers within a school."
+              }
+            ]
+          }
+        ]
+      }
+
     ]
+
   },
   {
     "controller": "schools",
@@ -365,26 +488,19 @@
   {
     "controller": "account",
     "action": "login",
-    "links": [
+    "functions": [
       {
-        "title": "Controller",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/AccountController.cs"
-      },
-      {
-        "title": "View",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Views/Account/Login.cshtml"
-      },
-      {
-        "title": "LoginViewModel",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Models/AccountViewModels.cs"
-      },
-      {
-        "title": "CookieService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/CookieService.cs",
-        "methods": [
+        "title": "Login for local user or O365 user",
+        "tab": "",
+        "files": [
           {
-            "title": "ClearCookies",
-            "description": "Remove cookies."
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/AccountController.cs",
+            "methods": [
+              {
+                "title": "Login",
+                "description": "Login controller."
+              }
+            ]
           }
         ]
       }
@@ -393,31 +509,37 @@
   {
     "controller": "account",
     "action": "O365login",
-    "links": [
+    "functions": [
       {
-        "title": "Controller",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/AccountController.cs"
-        
-      },
-      {
-        "title": "View",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Views/Account/O365login.cshtml"
-      },
-      {
-        "title": "CookieService",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Services/CookieService.cs",
-        "methods": [
+        "title": "Let O365 user login if user cookies exists.",
+        "tab": "",
+        "files": [
           {
-            "title": "GetCookiesOfUsername",
-            "description": "Try to get username from cookies. "
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/AccountController.cs",
+            "methods": [
+              {
+                "title": "O365login",
+                "description": "Page controller"
+              }
+            ]
           },
           {
-            "title": "GetCookiesOfEmail",
-            "description": "Try to get email from cookies."
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/CookieService.cs",
+            "methods": [
+              {
+                "title": "GetCookiesOfUsername",
+                "description": "Get user name form cookie if it exists."
+              },
+              {
+                "title": "GetCookiesOfEmail",
+                "description": "Get user email form cookie if it exists."
+              }
+            ]
           }
+
         ]
       }
-    ]
+	  ]
   },
   {
     "controller": "account",
@@ -612,18 +734,39 @@
   {
     "controller": "manage",
     "action": "aboutme",
-    "links": [
+    "functions": [
       {
-        "title": "Controller",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/ManageController.cs"
-      },
-      {
-        "title": "View",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Views/Manage/AboutMe.cshtml"
-      },
-      {
-        "title": "AboutMeViewModel",
-        "url": "/blob/master/src/EDUGraphAPI.Web/Models/AboutMeViewModel.cs"
+        "title": "Get current user inormation",
+        "tab": "",
+        "files": [
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Controllers/ManageController.cs",
+            "methods": [
+              {
+                "title": "AboutMe",
+                "description": "AboutMe page controller."
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
+            "methods": [
+              {
+                "title": "GetUserContextAsync",
+                "description": "Get current user information from context."
+              }
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Web/Services/SchoolsService.cs",
+            "methods": [
+              {
+                "title": "GetMyClassesAsync",
+                "description": "Get current user's classes."
+              }
+            ]
+          }
+        ]
       }
     ]
   }

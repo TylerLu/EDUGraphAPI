@@ -21,7 +21,7 @@
                             @foreach(var file in function.Files)
                             {
                                 <li>                                    
-                                    <p class="title">@file.Url</p>
+                                    <p class="title"><a href="@file.Url" target="_blank">@file.Url</a></p>
                                     <ul class="methods">
                                         @foreach (var method in file.Methods)
                                         { 
