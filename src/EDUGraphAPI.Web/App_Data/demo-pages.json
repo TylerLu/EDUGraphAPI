@@ -14,7 +14,7 @@
             "methods": [
               {
                 "title": "Index",
-                "description": "Index controller."
+                "description": "Index action."
               },
               {
                 "title": "GetSchoolsServiceAsync",
@@ -77,7 +77,7 @@
             "methods": [
               {
                 "title": "Classes",
-                "description": "Classes controller."
+                "description": "Classes action."
               }
             ]
           },
@@ -148,7 +148,7 @@
             "methods": [
               {
                 "title": "Users",
-                "description": "Users controller"
+                "description": "Users action."
               },
               {
                 "title": "GetSchoolsServiceAsync",
@@ -371,7 +371,7 @@
             "methods": [
               {
                 "title": "Login",
-                "description": "Login controller."
+                "description": "Login action."
               }
             ]
           }
@@ -392,7 +392,7 @@
             "methods": [
               {
                 "title": "O365login",
-                "description": "Page controller"
+                "description": "Page action."
               }
             ]
           },
@@ -743,7 +743,7 @@
             "methods": [
               {
                 "title": "AboutMe",
-                "description": "AboutMe page controller."
+                "description": "AboutMe page action."
               }
             ]
           },
