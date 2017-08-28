@@ -22,7 +22,7 @@ $(document).ready(function () {
 
     $(".demo-helper-control .body >ul> li >p").click(function (e) {
         if (e.target.tagName != "A") {
-            $(this).parent().toggleClass("collaspe");
+            $(this).parent().toggleClass("collapse");
         }
     });
 });

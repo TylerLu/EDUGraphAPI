@@ -440,6 +440,7 @@ max-width: 140px;
 .teacher-student .users-container #users.tiles-secondary-container, .teacher-student .students-container #students.tiles-secondary-container, .teacher-student .teachers-container #teachers.tiles-secondary-container{display:block}
 
 /* Demo Helper Control */
+.demo-helper-control .collapse{display:block;}
 .demo-helper-control {
     position: absolute;
     right: 0;
@@ -516,7 +517,7 @@ max-width: 140px;
 .demo-helper-control ul.files{margin-left: 18px;}
 .demo-helper-control .body > ul > li  ul p.title{margin-top:6px;}
 .demo-helper-control .body > ul > li  >p.link{margin:0 0 0 21px;}
-.demo-helper-control .body > ul > li.collaspe p.title{background-image:url('/images/collaspe-arrow.png');}
+.demo-helper-control .body > ul > li.collapse p.title{background-image:url('/images/collapse-arrow.png');}
 .demo-helper-control .body > ul > li  >p.title{
     cursor:pointer;
     background-image:url('/images/expand-arrow.png');
@@ -524,9 +525,9 @@ max-width: 140px;
     background-position: left 5px;
     padding-left: 21px;  
 }
-.demo-helper-control .body > ul > li.collaspe p, 
-.demo-helper-control .body > ul > li.collaspe ul{display:none;}
-.demo-helper-control .body > ul > li.collaspe p.title{display:block;}
+.demo-helper-control .body > ul > li.collapse p, 
+.demo-helper-control .body > ul > li.collapse ul{display:none;}
+.demo-helper-control .body > ul > li.collapse p.title{display:block;}
 .demo-helper-control .body ul li a{
     font-family: 'Helvetica Neue LT Std Roman';
     color: #3366ff;

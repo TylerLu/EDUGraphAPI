@@ -329,7 +329,7 @@
     <Content Include="Images\cancel.png" />
     <Content Include="Images\ClassDetailsTiles-bg.jpg" />
     <Content Include="Images\close.png" />
-    <Content Include="Images\collaspe-arrow.png" />
+    <Content Include="Images\collapse-arrow.png" />
     <Content Include="Images\contaerbg.gif" />
     <Content Include="Images\conversation_icon.png" />
     <Content Include="Images\conversation_icon_hover.png" />
