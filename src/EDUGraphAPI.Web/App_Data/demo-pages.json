@@ -329,7 +329,7 @@
             "methods": [
               {
                 "title": "GetAllAsync",
-                "description": "Get all conversations."
+                "description": "Get all documents."
               }
             ]
           }
