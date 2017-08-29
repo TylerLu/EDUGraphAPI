@@ -450,6 +450,10 @@
               {
                 "title": "Index",
                 "description": "Admin index page action."
+              },              
+              {
+                "title": "ClearAdalCache",
+                "description": "Remove all user tokens from database."
               }
             ]
           },
