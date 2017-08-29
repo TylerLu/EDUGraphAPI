@@ -25,8 +25,11 @@
         }
         @Html.AntiForgeryToken()
         <div class="userinfo">
-            <a href="javascript:void(0);" id="userinfolink">Logged in as: @displayRole Hello @User.Identity.GetFullName() @Html.Raw(userPhoto)</a>
+            <a href="javascript:void(0);" id="userinfolink">
+            Logged in as: @displayRole Hello @User.Identity.GetFullName() @Html.Raw(userPhoto)
             <span class="caret" id="caret"></span>
+            </a>
+            
         </div>
         <div class="popupcontainer" id="userinfoContainer">
             <div class="popuserinfo">
