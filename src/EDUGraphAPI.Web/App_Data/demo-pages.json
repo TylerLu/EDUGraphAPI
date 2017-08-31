@@ -511,7 +511,7 @@
     "action": "unlinkaccounts",
     "functions": [
       {
-        "title": "Get user that needs to unlink",
+        "title": "Unlink a user",
         "tab": "",
         "files": [
           {
@@ -747,7 +747,7 @@
             "methods": [
               {
                 "title": "AboutMe",
-                "description": "AboutMe page action."
+                "description": "About me page action."
               }
             ]
           },
