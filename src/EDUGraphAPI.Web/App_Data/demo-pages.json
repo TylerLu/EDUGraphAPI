@@ -450,10 +450,14 @@
               {
                 "title": "Index",
                 "description": "Admin index page action."
-              },              
+              },
               {
                 "title": "ClearAdalCache",
                 "description": "Remove all user tokens from database."
+              },
+              {
+                "title": "AddAppRoleAssignments",
+                "description": "Enable users access action."
               }
             ]
           },
@@ -469,6 +473,15 @@
                 "description": "Get current user's organization from database."
               }
 
+            ]
+          },
+          {
+            "url": "/blob/master/src/EDUGraphAPI.Common/Utils/AuthenticationHelper.cs",
+            "methods": [
+              {
+                "title": "GetActiveDirectoryClientAsync",
+                "description": "Get an instance of ActiveDirectoryClient."
+              }
             ]
           }
         ]
