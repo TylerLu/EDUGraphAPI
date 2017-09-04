@@ -83,7 +83,8 @@ namespace EDUGraphAPI.Web.Controllers
         public async Task<ActionResult> Users(string schoolId)
         {
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolUsersAsync(schoolId, pageSize);
+            var userContext = await applicationService.GetUserContextAsync();
+            var model = await schoolsService.GetSchoolUsersAsync(userContext,schoolId, pageSize);
             return View(model);
         }
 

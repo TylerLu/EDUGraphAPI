@@ -8,6 +8,7 @@ using EDUGraphAPI.Web.ViewModels;
 using Microsoft.Education;
 using Microsoft.Education.Data;
 using Microsoft.Graph;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -95,13 +96,35 @@ namespace EDUGraphAPI.Web.Services
         /// <summary>
         /// Get users, teachers and students of the specified school
         /// </summary>
-        public async Task<SchoolUsersViewModel> GetSchoolUsersAsync(string objectId, int top)
+        public async Task<SchoolUsersViewModel> GetSchoolUsersAsync(UserContext userContext, string objectId, int top)
         {
             var school = await educationServiceClient.GetSchoolAsync(objectId);
             var users = await educationServiceClient.GetMembersAsync(objectId, top, null);
             var students = await educationServiceClient.GetStudentsAsync(school.SchoolNumber, top, null);
             var teachers = await educationServiceClient.GetTeachersAsync(school.SchoolNumber, top, null);
-            return new SchoolUsersViewModel(school, users, students, teachers);
+            ArrayResult<SectionUser> studentsInMyClasses = null;
+            if (userContext.IsFaculty)
+            {
+                var mySections = await educationServiceClient.GetMySectionsAsync(true);
+                studentsInMyClasses = new ArrayResult<SectionUser>();
+                List<SectionUser> studentsList = new List<SectionUser>();
+                foreach (var item in mySections)
+                {
+                    if (item.SchoolId == school.SchoolId)
+                    {
+                        foreach (var user in item.Members)
+                        {
+                            if (user.ObjectType == "Student" && studentsList.Where(c => c.O365UserId == user.O365UserId).Count() == 0)
+                            {
+                                studentsList.Add(user);
+                            }
+                        }
+                    }
+                }
+
+                studentsInMyClasses.Value = studentsList.ToArray();
+            }
+            return new SchoolUsersViewModel(userContext, school, users, students, teachers, studentsInMyClasses);
         }
 
         /// <summary>

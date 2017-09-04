@@ -41,12 +41,25 @@
                 <div class="teacicon"></div><div>Teacher</div>
             </div>
             <div class="col-md-6 filterlink-container">
-                <span>FILTER:</span> <a id="filterteacher" class="filterlink" data-type="teachers"> Teachers</a> | <a id="filterstudent" class="filterlink" data-type="students">Students</a> | <a id="filterall" class="filterlink selected" data-type="users">All</a>
+                <span>FILTER:</span> 
+                @if (Model.UserContext.IsFaculty)
+                {
+                    <a id="studentsinmyclasses" class="filterlink" data-type="studentsinmyclasses"> Students in my classes</a><span> | </span>
+                }
+                 <a id="filterteacher" class="filterlink" data-type="teachers"> Teachers</a>
+                | <a id="filterstudent" class="filterlink" data-type="students">Students</a> 
+                | <a id="filterall" class="filterlink selected" data-type="users">All</a>
             </div>
         </div>
         <br style="clear:both;" />
     </div>
     <div class="users-container tiles-root-container">
+        @if (Model.UserContext.IsFaculty)
+        {
+            <div id="studentsinmyclasses" class="tiles-secondary-container">
+                @Users(Model.StudentsInMyClasses)
+            </div>
+        }
         <div id="users" class="tiles-secondary-container">
             @Users(Model.Users)
         </div>
