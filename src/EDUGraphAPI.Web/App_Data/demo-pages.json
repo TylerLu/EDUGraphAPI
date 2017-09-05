@@ -458,6 +458,19 @@
               {
                 "title": "AddAppRoleAssignments",
                 "description": "Enable users access action."
+              },
+              {
+                "title": "Consent",
+                "description": "Admin consent action."
+              },
+              {
+                "title": "Unconsent",
+                "description": "Admin unconsent action."
+              },
+             
+              {
+                "title": "ProcessCode",
+                "description": "Handle consent result."
               }
             ]
           },
