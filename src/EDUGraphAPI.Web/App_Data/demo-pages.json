@@ -1,4 +1,4 @@
-﻿//   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
+﻿//   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 //   * See LICENSE in the project root for license information.
 [
   {
@@ -45,11 +45,11 @@
             "methods": [
               {
                 "title": "GetStudentAsync",
-                "description": "You can get the current logged in user and check if that user is a student."
+                "description": "Get the current logged in user and check if that user is a student."
               },
               {
                 "title": "GetTeacherAsync",
-                "description": "You can get the current logged in user and check if that user is a teacher."
+                "description": "Get the current logged in user and check if that user is a teacher."
               },
               {
                 "title": "GetSchoolsAsync",
@@ -61,7 +61,7 @@
 
         ]
       }
-     
+
     ]
   },
   {
@@ -427,7 +427,7 @@
 
         ]
       }
-	  ]
+    ]
   },
   {
     "controller": "account",
@@ -482,7 +482,7 @@
                 "title": "Unconsent",
                 "description": "Admin unconsent action."
               },
-             
+
               {
                 "title": "ProcessCode",
                 "description": "Handle consent result."
@@ -598,7 +598,7 @@
               },
               {
                 "title": "ProcessCode",
-                "description": "Consent user action after login succeed."
+                "description": "Consent user action after successful login."
               }
             ]
           },
