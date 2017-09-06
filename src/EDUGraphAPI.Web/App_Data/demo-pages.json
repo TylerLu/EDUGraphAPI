@@ -177,6 +177,21 @@
         ]
       },
       {
+        "title": "Get all students in my classes",
+        "tab": "studentsinmyclasses",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetMySectionsAsync",
+                "description": "Get all my classes with students."
+              }
+            ]
+          }
+        ]
+      },
+      {
         "title": "Get all students and teachers information",
         "tab": "filterall",
         "files": [
