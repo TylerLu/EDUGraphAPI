@@ -83,12 +83,33 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 
    * Click **Required permissions**. Add the following permissions:
 
-     | API                            | Application Permissions                  | Description                              | Delegated Permissions                    | Description |
-     | ------------------------------ | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- | ----------- |
-     | Microsoft Graph                | Read all users' full profiles<br> Read directory data | Allows the app to read the profile of all users in the organization on behalf of the signed-in user.<br> Allows the app to read all of the data in the organization's directory, such as users, groups, and apps, and their associated navigation properties. | Read directory data<br>Access directory as the signed in user<br>Sign users in |             |
-     | Windows Azure Active Directory | Read directory data                      |                                          | Sign in and read user profile<br>Read and write directory data |             |
+     | API                            | Application Permissions                  | Delegated Permissions                    |
+     | ------------------------------ | ---------------------------------------- | ---------------------------------------- |
+     | Microsoft Graph                | Read all users' full profiles<br> Read directory data | Read directory data<br>Access directory as the signed in user<br>Sign users in |
+     | Windows Azure Active Directory | Read directory data                      | Sign in and read user profile<br>Read and write directory data |
 
      ![](/Images/aad-create-app-06.png)
+
+     ​
+
+     **Application Permissions**
+
+     | Permission                    | Description                              |
+     | ----------------------------- | ---------------------------------------- |
+     | Read all users' full profiles | Allows the app to read the full set of profile properties, group membership, reports and managers of other users in your organization, without a signed-in user. |
+     | Read directory data           | Allows the app to read data in your organization's directory, such as users, groups and apps, without a signed-in user. |
+
+     **Delegated Permissions**
+
+     | Permission                             | Description                              |
+     | -------------------------------------- | ---------------------------------------- |
+     | Read directory data                    | Allows the app to read data in your organization's directory, such as users, groups and apps. |
+     | Access directory as the signed in user | Allows the app to have the same access to information in the directory as the signed-in user. |
+     | Sign users in                          | Allows users to sign in to the app with their work or school accounts and allows the app to see basic user profile information. |
+     | Sign in and read user profile          | Allows users to sign-in to the app, and allows the app to read the profile of signed-in users. It also allows the app to read basic company information of signed-in users. |
+     | Read and write directory data          | Allows the app to read and write data in your organization's directory, such as users, and groups.  It does not allow the app to delete users or groups, or reset user passwords. |
+
+     ​
 
    * Click **Keys**, then add a new key:
 
