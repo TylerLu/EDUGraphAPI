@@ -103,10 +103,9 @@ All code referenced in these instructions is also used in the associated files i
     <add key="ida:ClientSecret" value="INSERT YOUR CLIENT SECRET HERE" />
   </appSettings>
 ```
-- **ida:ClientId**: use the Client Id of the app registration you created earlier.
+​	**ida:ClientId**: use the Client Id of the app registration you created earlier.
 
-- **ida:ClientSecret**: use the Key value of the app registration you created earlier.
-
+​	**ida:ClientSecret**: use the Key value of the app registration you created earlier.
 
 3. Add a new file **Constants.cs** to the  **EDUGraphAPI.Common** project at the root, remove all generated code and paste the following.  
 
@@ -139,150 +138,176 @@ All code referenced in these instructions is also used in the associated files i
 
 ​	To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Common/Constants.cs) in the Demo app.
 
-
 4. Add a new folder **Models** to the **EDUGraphAPI.Common** project. Add a new file named **AdalTokenCache.cs** in **Models** folder, remove all generated code and paste the following. 
 
+```c#
+  using EDUGraphAPI.Data;
+  using Microsoft.IdentityModel.Clients.ActiveDirectory;
+  using System;
+  using System.Linq;
+  using System.Web.Security;
+
+  namespace EDUGraphAPI.Models
+  {
+      public class AdalTokenCache : TokenCache
+      {
+          private static readonly string MachinKeyProtectPurpose = "ADALCache";
+
+          private string userId;
+
+          public AdalTokenCache(string signedInUserId)
+          {
+              this.userId = signedInUserId;
+              this.AfterAccess = AfterAccessNotification;
+              this.BeforeAccess = BeforeAccessNotification;
+
+              GetCahceAndDeserialize();
+          }
+
+          public override void Clear()
+          {
+              base.Clear();
+              ClearUserTokenCache(userId);
+          }
+
+          void BeforeAccessNotification(TokenCacheNotificationArgs args)
+          {
+              GetCahceAndDeserialize();
+          }
+
+          void AfterAccessNotification(TokenCacheNotificationArgs args)
+          {
+              if (this.HasStateChanged)
+              {
+                  SerializeAndUpdateCache();
+                  this.HasStateChanged = false;
+              }
+          }
+
+
+          private void GetCahceAndDeserialize()
+          {
+              var cacheBits = GetUserTokenCache(userId);
+              if (cacheBits != null)
+              {
+                  try
+                  {
+                      var data = MachineKey.Unprotect(cacheBits, MachinKeyProtectPurpose);
+                      this.Deserialize(data);
+                  }
+                  catch { }
+              }
+          }
+
+          private void SerializeAndUpdateCache()
+          {
+              var cacheBits = MachineKey.Protect(this.Serialize(), MachinKeyProtectPurpose);
+              UpdateUserTokenCache(userId, cacheBits);
+          }
+
+
+          private byte[] GetUserTokenCache(string userId)
+          {
+              using (var db = new ApplicationDbContext())
+              {
+                  var cache = GetUserTokenCache(db, userId);
+                  return cache != null ? cache.cacheBits : null;
+              }
+          }
+
+          private void UpdateUserTokenCache(string userId, byte[] cacheBits)
+          {
+              using (var db = new ApplicationDbContext())
+              {
+                  var cache = GetUserTokenCache(db, userId);
+                  if (cache == null)
+                  {
+                      cache = new UserTokenCache { webUserUniqueId = userId };
+                      db.UserTokenCacheList.Add(cache);
+                  }
+
+                  cache.cacheBits = cacheBits;
+                  cache.LastWrite = DateTime.UtcNow;
+
+                  db.SaveChanges();
+              }
+          }
+
+          private UserTokenCache GetUserTokenCache(ApplicationDbContext db, string userId)
+          {
+              return db.UserTokenCacheList
+                     .OrderByDescending(i => i.LastWrite)
+                     .FirstOrDefault(c => c.webUserUniqueId == userId);
+          }
+
+          private void ClearUserTokenCache(string userId)
+          {
+              using (var db = new ApplicationDbContext())
+              {
+                  var cacheEntries = db.UserTokenCacheList
+                      .Where(c => c.webUserUniqueId == userId)
+                      .ToArray();
+                  db.UserTokenCacheList.RemoveRange(cacheEntries);
+                  db.SaveChanges();
+              }
+          }
+
+          public static void ClearUserTokenCache()
+          {
+              using (var db = new ApplicationDbContext())
+              {
+                  var cacheEntries = db.UserTokenCacheList
+                      .ToArray();
+                  db.UserTokenCacheList.RemoveRange(cacheEntries);
+                  db.SaveChanges();
+              }
+          }
+      }
+  }
+```
+
+​	This class is used by Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext to store access and refresh tokens.
+
+​	To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Common/Models/AdalTokenCache.cs) in the Demo app.
+
+5. Add a new folder **Utils** to the **EDUGraphAPI.Common** project. Add a new file named **AuthorizationHelper.cs** in **Utils** folder, remove all generated code and paste the following. 
 
    ```c#
-   /*   
-    *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
-    *   * See LICENSE in the project root for license information.  
-    */
-   using EDUGraphAPI.Data;
-   using Microsoft.IdentityModel.Clients.ActiveDirectory;
    using System;
-   using System.Linq;
-   using System.Web.Security;
 
-   namespace EDUGraphAPI.Models
+   namespace EDUGraphAPI.Utils
    {
-       public class AdalTokenCache : TokenCache
+       /// <summary>
+       /// A static class used to build authorize URL
+       /// </summary>
+       public static class AuthorizationHelper
        {
-           private static readonly string MachinKeyProtectPurpose = "ADALCache";
-
-           private string userId;
-
-           public AdalTokenCache(string signedInUserId)
+           public static class Prompt
            {
-               this.userId = signedInUserId;
-               this.AfterAccess = AfterAccessNotification;
-               this.BeforeAccess = BeforeAccessNotification;
-
-               GetCahceAndDeserialize();
+               public static readonly string Consent = "consent";
+               public static readonly string Login = "login";
+               public static readonly string AdminConsent = "admin_consent";
            }
 
-           public override void Clear()
+           public static string GetUrl(string redirectUrl, string state, string resource, string prompt = null)
            {
-               base.Clear();
-               ClearUserTokenCache(userId);
-           }
-
-           void BeforeAccessNotification(TokenCacheNotificationArgs args)
-           {
-               GetCahceAndDeserialize();
-           }
-
-           void AfterAccessNotification(TokenCacheNotificationArgs args)
-           {
-               if (this.HasStateChanged)
-               {
-                   SerializeAndUpdateCache();
-                   this.HasStateChanged = false;
-               }
-           }
-
-
-           private void GetCahceAndDeserialize()
-           {
-               var cacheBits = GetUserTokenCache(userId);
-               if (cacheBits != null)
-               {
-                   try
-                   {
-                       var data = MachineKey.Unprotect(cacheBits, MachinKeyProtectPurpose);
-                       this.Deserialize(data);
-                   }
-                   catch { }
-               }
-           }
-
-           private void SerializeAndUpdateCache()
-           {
-               var cacheBits = MachineKey.Protect(this.Serialize(), MachinKeyProtectPurpose);
-               UpdateUserTokenCache(userId, cacheBits);
-           }
-
-
-           private byte[] GetUserTokenCache(string userId)
-           {
-               using (var db = new ApplicationDbContext())
-               {
-                   var cache = GetUserTokenCache(db, userId);
-                   return cache != null ? cache.cacheBits : null;
-               }
-           }
-
-           private void UpdateUserTokenCache(string userId, byte[] cacheBits)
-           {
-               using (var db = new ApplicationDbContext())
-               {
-                   var cache = GetUserTokenCache(db, userId);
-                   if (cache == null)
-                   {
-                       cache = new UserTokenCache { webUserUniqueId = userId };
-                       db.UserTokenCacheList.Add(cache);
-                   }
-
-                   cache.cacheBits = cacheBits;
-                   cache.LastWrite = DateTime.UtcNow;
-
-                   db.SaveChanges();
-               }
-           }
-
-           private UserTokenCache GetUserTokenCache(ApplicationDbContext db, string userId)
-           {
-               return db.UserTokenCacheList
-                      .OrderByDescending(i => i.LastWrite)
-                      .FirstOrDefault(c => c.webUserUniqueId == userId);
-           }
-
-           private void ClearUserTokenCache(string userId)
-           {
-               using (var db = new ApplicationDbContext())
-               {
-                   var cacheEntries = db.UserTokenCacheList
-                       .Where(c => c.webUserUniqueId == userId)
-                       .ToArray();
-                   db.UserTokenCacheList.RemoveRange(cacheEntries);
-                   db.SaveChanges();
-               }
-           }
-
-           public static void ClearUserTokenCache()
-           {
-               using (var db = new ApplicationDbContext())
-               {
-                   var cacheEntries = db.UserTokenCacheList
-                       .ToArray();
-                   db.UserTokenCacheList.RemoveRange(cacheEntries);
-                   db.SaveChanges();
-               }
+               var url = string.Format("{0}oauth2/authorize?response_type=code&client_id={1}&resource={2}&redirect_uri={3}&state={4}",
+                   Constants.Authority,
+                   Uri.EscapeDataString(Constants.AADClientId),
+                   Uri.EscapeDataString(resource),
+                   Uri.EscapeDataString(redirectUrl),
+                   Uri.EscapeDataString(state)
+               );
+               if (prompt.IsNotNullAndEmpty()) url += "&prompt=" + Uri.EscapeDataString(prompt);
+               return url;
            }
        }
    }
-
    ```
 
-   This class is used by Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext to store access and refresh tokens.
+   This is a static class that used to build O365 authorize URL.
 
-   To see how this file works in the Demo app, refer to the file located [here](src/EDUGraphAPI.Common/Models/AdalTokenCache.cs) in the Demo app.
-
-
-
-
-
-
+   To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Common/Utils/AuthorizationHelper.cs) in the Demo app.
 
 
 
