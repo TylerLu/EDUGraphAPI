@@ -472,33 +472,33 @@ All code referenced in these instructions is also used in the associated files i
 
 10. Add a new folder **Infrastructure** to the **EDUGraphAPI.Web** project. Add a new file named **EduAuthorizeAttribute.cs** in **Infrastructure** folder, remove all generated code and paste the following. 
 
-  ```c#
-  using System.Web.Mvc;
+    ```c#
+    using System.Web.Mvc;
 
-  namespace EDUGraphAPI.Web.Infrastructure
-  {
-      /// <summary>
-      /// Allow the web app to redirect the current user to the proper login page in our multi-authentication-method scenario
-      /// </summary>
-      public class EduAuthorizeAttribute : AuthorizeAttribute
-      {
-          protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
-          {
-              if (filterContext.HttpContext.Request.IsAjaxRequest())
-                  filterContext.Result = new JsonResult { Data = new { error = "Unauthorized" } };
-              else
-              {
-                  filterContext.Result = new RedirectResult("/Account/Login");
+    namespace EDUGraphAPI.Web.Infrastructure
+    {
+        /// <summary>
+        /// Allow the web app to redirect the current user to the proper login page in our multi-authentication-method scenario
+        /// </summary>
+        public class EduAuthorizeAttribute : AuthorizeAttribute
+        {
+            protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
+            {
+                if (filterContext.HttpContext.Request.IsAjaxRequest())
+                    filterContext.Result = new JsonResult { Data = new { error = "Unauthorized" } };
+                else
+                {
+                    filterContext.Result = new RedirectResult("/Account/Login");
 
-              }
-          }
-      }
-  }
-  ```
+                }
+            }
+        }
+    }
+    ```
 
-  This allows the web app to redirect the current user to the login page.
+    This allows the web app to redirect the current user to the login page.
 
-  To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/Infrastructure/EduAuthorizeAttribute.cs) in the Demo app.
+    To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/Infrastructure/EduAuthorizeAttribute.cs) in the Demo app.
 
 11. Edit **SchoolsController.cs** in the **Controllers** folder of **EDUGraphAPI.Web** project. Remove all code and paste the following. 
 
