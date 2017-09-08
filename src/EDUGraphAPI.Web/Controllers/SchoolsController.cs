@@ -129,10 +129,26 @@ namespace EDUGraphAPI.Web.Controllers
             model.IsStudent = userContext.IsStudent;
             model.O365UserId = userContext.User.O365UserId;
             model.MyFavoriteColor = userContext.User.FavoriteColor;
-            
+
             return View(model);
         }
+        //
+        //GET: /Schools/{Id of a school}/Classes/6510F0FC-53B3-4D9B-9742-84C9C8FA2BE4/UserId
+        public async Task<ActionResult> AddCoTeacher(string schoolId, string sectionId, string userId)
+        {
+            var graphServiceClient = await AuthenticationHelper.GetGraphServiceClientAsync();
+            var directoryObj = new Microsoft.Graph.DirectoryObject{
+                Id = userId
+            };
+            try{
+                await graphServiceClient.Groups[sectionId].Members.References.Request().AddAsync(directoryObj);
+                await graphServiceClient.Groups[sectionId].Owners.References.Request().AddAsync(directoryObj);
+            }
+            catch(Microsoft.Graph.ServiceException ex){
 
+            }
+            return RedirectToAction("ClassDetails", new { schoolId = schoolId, sectionId = sectionId });
+        }
         //
         // POST: /Schools/SaveSeatingArrangements
         [HttpPost]

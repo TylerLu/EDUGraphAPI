@@ -175,6 +175,17 @@ namespace Microsoft.Education
             return await HttpGetArrayAsync<SectionUser>($"users?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'", top, nextLink);
         }
 
+        /// <summary>
+        /// Get teachers within a school
+        /// Reference URL: https://msdn.microsoft.com/en-us/office/office365/api/school-rest-operations#get-school-members
+        /// </summary>
+        /// <param name="schoolId"></param>
+        /// <returns></returns>
+        public async Task<SectionUser[]> GetTeachersAsync(string schoolId)
+        {
+            return await HttpGetArrayAsync<SectionUser>($"users?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'");
+        }
+
         #endregion
 
         #region HttpGet

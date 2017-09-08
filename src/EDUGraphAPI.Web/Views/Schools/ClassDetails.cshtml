@@ -36,15 +36,41 @@
                 <span id="termdate">@(string.IsNullOrEmpty(Model.Section.TermEndDate) ? "" : Convert.ToDateTime(Model.Section.TermEndDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
             </div>
             <div class="col-md-6">
+                <span>Teacher:</span>
                 @for (var i = 0; i < teachersList.Count(); i++)
                 {
-                    <span>Teacher:</span> @teachersList[i].DisplayName
+                    var name = teachersList[i].DisplayName;
                     if (i < teachersList.Count() - 1)
                     {
-                        <br />
+                        name = name + ", ";
                     }
+                    @name
+                }
+                @if (!Model.IsStudent)
+                {
+                    <a id="addateacher" href="javascript:void(0)">Add a teacher</a>
                 }
             </div>
+
+            @if (!Model.IsStudent)
+            {
+                <div class="schoolteachers">
+                    <div class="close"><img src="/Images/close.png"></div>
+                    <div class="title">Select a teacher</div>
+                    <div class="list">
+                        <ul>
+                            @foreach (var teacher in Model.SchoolTeachers)
+                            {
+                                <li>
+                                    <a href="@Url.Action("AddCoTeacher", new { schoolId = Model.School.Id, sectionId = Model.Section.Id, userId = teacher.O365UserId })">
+                                        <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = teacher.O365UserId })" /> @teacher.DisplayName 
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
         </div>
         <div style="clear:both;"></div>
     </div>

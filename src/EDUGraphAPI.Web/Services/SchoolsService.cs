@@ -165,6 +165,12 @@ namespace EDUGraphAPI.Web.Services
             var school = await educationServiceClient.GetSchoolAsync(schoolId);
             var section = await educationServiceClient.GetSectionAsync(classId);
             var driveRootFolder = await group.Drive.Root.Request().GetAsync();
+            var schoolTeachers = await educationServiceClient.GetTeachersAsync(school.SchoolNumber);
+            foreach(var sectionTeacher in section.Teachers)
+            {
+                schoolTeachers = schoolTeachers.Where( t=> t.O365UserId!= sectionTeacher.O365UserId).ToArray();
+            }
+
             foreach (var user in section.Students)
             {
                 var seat = dbContext.ClassroomSeatingArrangements.Where(c => c.O365UserId == user.O365UserId && c.ClassId == classId).FirstOrDefault();
@@ -179,7 +185,8 @@ namespace EDUGraphAPI.Web.Services
                 Conversations = await group.Conversations.Request().GetAllAsync(),
                 SeeMoreConversationsUrl = string.Format(Constants.O365GroupConversationsUrl, section.Email),
                 DriveItems = await group.Drive.Root.Children.Request().GetAllAsync(),
-                SeeMoreFilesUrl = driveRootFolder.WebUrl
+                SeeMoreFilesUrl = driveRootFolder.WebUrl,
+                SchoolTeachers = schoolTeachers
             };
         }
 

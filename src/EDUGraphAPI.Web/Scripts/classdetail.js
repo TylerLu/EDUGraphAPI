@@ -17,6 +17,12 @@ $(document).ready(function () {
         tabname = $(this).find("a").attr("href");
         showDemoHelper(tabname);
     });
+    $('.schoolteachers .close').click(function (e) {
+       $(this).parent().hide();
+    });
+    $('#addateacher').click(function (e) {
+        $('.schoolteachers').show();
+    });
 });
 
 function iniTiles(){
@@ -249,6 +255,7 @@ function cancelEditDesk() {
 function getSeatingArrangements(O365UserId, Position) {
     return { O365UserId: O365UserId, Position: Position };
 }
+
 
 $.urlParam = function (name) {
     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
