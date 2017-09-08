@@ -8,6 +8,34 @@ The code in the following sections is part of the full featured .NET app and pre
 * [Register the application in Azure Active Directory](#register-the-application-in-azure-active-directory)
 * [Build and debug locally](#build-and-debug-locally)
 
+# Build and deploy the Starter Project
+
+This project can be opened with the edition of Visual Studio 2015 you already have, or download and install the Community edition to run, build and/or develop this application locally.
+
+- [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409)
+
+The starter project is a simple application with only SQL authentication configured.  By updating this project, you can see how to integrate O365 Single Sign On to an application with existing authentication.
+
+1. Open Visual Studio 2015 as administrator, open the project under **Starter Project** folder. The starter project you can register a new user, login and then display a basic page with login user info.
+
+2. Deploy the application locally by pressing F5.
+
+3. Click the Register link to register as a user.
+
+   ![proj01](Images/proj03.png)
+
+4. Complete the form to add a user.
+
+   ![proj01](Images/proj01.png)
+
+5. Once registered, you should see a black page.
+
+   ![proj03](Images/proj02.png)
+
+# Add O365 Single Sign On to the starter project
+Follow these instructions to add SSO functionality to the starter project application.  You will need to configure your app in Azure, create files and copy and paste code from the instructions.  
+
+All code referenced in these instructions is also used in the associated files in the [Demo App](https://github.com/TylerLu/EDUGraphAPI/)
 
 ## Register the application in Azure Active Directory
 
@@ -59,17 +87,10 @@ The code in the following sections is part of the full featured .NET app and pre
 
    Close the Settings window.
 
+## Add Single Sign On
 
-## Build and debug locally
-
-This project can be opened with the edition of Visual Studio 2015 you already have, or download and install the Community edition to run, build and/or develop this application locally.
-
-- [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409)
-
-Debug the **EDUGraphAPI.Web**:
-
-1. Open Visual Studio 2015 as administrator, open the project under **Starter Project** folder. In starter project you can register a new user, login and then display a basic page with login user info.
-2. Open **Web.config** file, find **appSetings** section, replace the **appSettings** using the following code.  Two new keys **ida:ClientId** and **ida:ClientSecret** are added. These keys will be used to identity in your apps with Windows Azure Active Directory.
+1. Open the Starter Project in Visual Studio, if it isn't already open.  
+2. In the EDUGraphAPI.Web project, open **Web.config** file, find **appSetings** section, replace the **appSettings** using the following code.  Two new keys **ida:ClientId** and **ida:ClientSecret** are added. These keys will be used to identity in your apps with Windows Azure Active Directory.
 
 
 ```xml
@@ -87,33 +108,38 @@ Debug the **EDUGraphAPI.Web**:
 - **ida:ClientSecret**: use the Key value of the app registration you created earlier.
 
 
-3. Add a new file **Constants.cs** on **EDUGraphAPI.Common** project root folder, delete all code and copy the following code to paste.  This file can also be found on GitHub: **URL to be added**.  This is a static class contains values of app settings and other constant values.
+3. Add a new file **Constants.cs** to the  **EDUGraphAPI.Common** project at the root, remove all generated code and paste the following.  
 
+```c#
+  using System.Configuration;
+
+  namespace EDUGraphAPI
+  {
+      /// <summary>
+      /// A static class contains values of app settings and other constant values
+      /// </summary>
+      public static class Constants
+      {
+          public static readonly string AADClientId = ConfigurationManager.AppSettings["ida:ClientId"];
+          public static readonly string AADClientSecret = ConfigurationManager.AppSettings["ida:ClientSecret"];
+
+          public const string AADInstance = "https://login.microsoftonline.com/";
+          public const string Authority = AADInstance + "common/";
+          public static class Resources
+          {
+              public const string AADGraph = "https://graph.windows.net";
+              public const string MSGraph = "https://graph.microsoft.com";
+              public const string MSGraphVersion = "beta";
+          }
+
+      }
+  }
 ```
-using System.Configuration;
+​	This is a static class and contains app settings values and other constants.
 
-namespace EDUGraphAPI
-{
-    /// <summary>
-    /// A static class contains values of app settings and other constant values
-    /// </summary>
-    public static class Constants
-    {
-        public static readonly string AADClientId = ConfigurationManager.AppSettings["ida:ClientId"];
-        public static readonly string AADClientSecret = ConfigurationManager.AppSettings["ida:ClientSecret"];
+​	To see how this file works in the Demo app, refer to the file located [here](https://github.com/TylerLu/EDUGraphAPI/blob/master/src/EDUGraphAPI.Common/Constants.cs) in the Demo app.
 
-        public const string AADInstance = "https://login.microsoftonline.com/";
-        public const string Authority = AADInstance + "common/";
-        public static class Resources
-        {
-            public const string AADGraph = "https://graph.windows.net";
-            public const string MSGraph = "https://graph.microsoft.com";
-            public const string MSGraphVersion = "beta";
-        }
 
-    }
-}
-```
 4. Add a new folder **Models** on **EDUGraphAPI.Common** project. Add a new file named **AdalTokenCache.cs** in **Models** folder.
 
 
