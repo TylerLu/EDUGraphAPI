@@ -144,140 +144,138 @@ All code referenced in these instructions is also used in the associated files i
 4. Add a new folder **Models** to the **EDUGraphAPI.Common** project. Add a new file named **AdalTokenCache.cs** in **Models** folder, remove all generated code and paste the following. 
 
    ```c#
-     using EDUGraphAPI.Data;
-     using Microsoft.IdentityModel.Clients.ActiveDirectory;
-     using System;
-     using System.Linq;
-     using System.Web.Security;
+   using EDUGraphAPI.Data;
+   using Microsoft.IdentityModel.Clients.ActiveDirectory;
+   using System;
+   using System.Linq;
+   using System.Web.Security;
 
-     namespace EDUGraphAPI.Models
-     {
-         public class AdalTokenCache : TokenCache
-         {
-             private static readonly string MachinKeyProtectPurpose = "ADALCache";
+   namespace EDUGraphAPI.Models
+   {
+       public class AdalTokenCache : TokenCache
+       {
+           private static readonly string MachinKeyProtectPurpose = "ADALCache";
 
-             private string userId;
+           private string userId;
 
-             public AdalTokenCache(string signedInUserId)
-             {
-                 this.userId = signedInUserId;
-                 this.AfterAccess = AfterAccessNotification;
-                 this.BeforeAccess = BeforeAccessNotification;
+           public AdalTokenCache(string signedInUserId)
+           {
+               this.userId = signedInUserId;
+               this.AfterAccess = AfterAccessNotification;
+               this.BeforeAccess = BeforeAccessNotification;
 
-                 GetCahceAndDeserialize();
-             }
+               GetCahceAndDeserialize();
+           }
 
-             public override void Clear()
-             {
-                 base.Clear();
-                 ClearUserTokenCache(userId);
-             }
+           public override void Clear()
+           {
+               base.Clear();
+               ClearUserTokenCache(userId);
+           }
 
-             void BeforeAccessNotification(TokenCacheNotificationArgs args)
-             {
-                 GetCahceAndDeserialize();
-             }
+           void BeforeAccessNotification(TokenCacheNotificationArgs args)
+           {
+               GetCahceAndDeserialize();
+           }
 
-             void AfterAccessNotification(TokenCacheNotificationArgs args)
-             {
-                 if (this.HasStateChanged)
-                 {
-                     SerializeAndUpdateCache();
-                     this.HasStateChanged = false;
-                 }
-             }
+           void AfterAccessNotification(TokenCacheNotificationArgs args)
+           {
+               if (this.HasStateChanged)
+               {
+                   SerializeAndUpdateCache();
+                   this.HasStateChanged = false;
+               }
+           }
+
+
+           private void GetCahceAndDeserialize()
+           {
+               var cacheBits = GetUserTokenCache(userId);
+               if (cacheBits != null)
+               {
+                   try
+                   {
+                       var data = MachineKey.Unprotect(cacheBits, MachinKeyProtectPurpose);
+                       this.Deserialize(data);
+                   }
+                   catch { }
+               }
+           }
+
+           private void SerializeAndUpdateCache()
+           {
+               var cacheBits = MachineKey.Protect(this.Serialize(), MachinKeyProtectPurpose);
+               UpdateUserTokenCache(userId, cacheBits);
+           }
+
+
+           private byte[] GetUserTokenCache(string userId)
+           {
+               using (var db = new ApplicationDbContext())
+               {
+                   var cache = GetUserTokenCache(db, userId);
+                   return cache != null ? cache.cacheBits : null;
+               }
+           }
+
+           private void UpdateUserTokenCache(string userId, byte[] cacheBits)
+           {
+               using (var db = new ApplicationDbContext())
+               {
+                   var cache = GetUserTokenCache(db, userId);
+                   if (cache == null)
+                   {
+                       cache = new UserTokenCache { webUserUniqueId = userId };
+                       db.UserTokenCacheList.Add(cache);
+                   }
+
+                   cache.cacheBits = cacheBits;
+                   cache.LastWrite = DateTime.UtcNow;
+
+                   db.SaveChanges();
+               }
+           }
+
+           private UserTokenCache GetUserTokenCache(ApplicationDbContext db, string userId)
+           {
+               return db.UserTokenCacheList
+                      .OrderByDescending(i => i.LastWrite)
+                      .FirstOrDefault(c => c.webUserUniqueId == userId);
+           }
+
+           private void ClearUserTokenCache(string userId)
+           {
+               using (var db = new ApplicationDbContext())
+               {
+                   var cacheEntries = db.UserTokenCacheList
+                       .Where(c => c.webUserUniqueId == userId)
+                       .ToArray();
+                   db.UserTokenCacheList.RemoveRange(cacheEntries);
+                   db.SaveChanges();
+               }
+           }
+
+           public static void ClearUserTokenCache()
+           {
+               using (var db = new ApplicationDbContext())
+               {
+                   var cacheEntries = db.UserTokenCacheList
+                       .ToArray();
+                   db.UserTokenCacheList.RemoveRange(cacheEntries);
+                   db.SaveChanges();
+               }
+           }
+       }
+   }
    ```
 
+   This class is used by Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext to store access and refresh tokens.
 
-             private void GetCahceAndDeserialize()
-             {
-                 var cacheBits = GetUserTokenCache(userId);
-                 if (cacheBits != null)
-                 {
-                     try
-                     {
-                         var data = MachineKey.Unprotect(cacheBits, MachinKeyProtectPurpose);
-                         this.Deserialize(data);
-                     }
-                     catch { }
-                 }
-             }
-    
-             private void SerializeAndUpdateCache()
-             {
-                 var cacheBits = MachineKey.Protect(this.Serialize(), MachinKeyProtectPurpose);
-                 UpdateUserTokenCache(userId, cacheBits);
-             }
+   To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Common/Models/AdalTokenCache.cs) in the Demo app.
 
+5. Add a new folder **Utils**  to the  **EDUGraphAPI.Common** project at the root. Add a new file named **AuthenticationHelper.cs** in **Utils** folder of the **EDUGraphAPI.Common** project, remove all generated code and paste the following.
 
-             private byte[] GetUserTokenCache(string userId)
-             {
-                 using (var db = new ApplicationDbContext())
-                 {
-                     var cache = GetUserTokenCache(db, userId);
-                     return cache != null ? cache.cacheBits : null;
-                 }
-             }
-    
-             private void UpdateUserTokenCache(string userId, byte[] cacheBits)
-             {
-                 using (var db = new ApplicationDbContext())
-                 {
-                     var cache = GetUserTokenCache(db, userId);
-                     if (cache == null)
-                     {
-                         cache = new UserTokenCache { webUserUniqueId = userId };
-                         db.UserTokenCacheList.Add(cache);
-                     }
-    
-                     cache.cacheBits = cacheBits;
-                     cache.LastWrite = DateTime.UtcNow;
-    
-                     db.SaveChanges();
-                 }
-             }
-    
-             private UserTokenCache GetUserTokenCache(ApplicationDbContext db, string userId)
-             {
-                 return db.UserTokenCacheList
-                        .OrderByDescending(i => i.LastWrite)
-                        .FirstOrDefault(c => c.webUserUniqueId == userId);
-             }
-    
-             private void ClearUserTokenCache(string userId)
-             {
-                 using (var db = new ApplicationDbContext())
-                 {
-                     var cacheEntries = db.UserTokenCacheList
-                         .Where(c => c.webUserUniqueId == userId)
-                         .ToArray();
-                     db.UserTokenCacheList.RemoveRange(cacheEntries);
-                     db.SaveChanges();
-                 }
-             }
-    
-             public static void ClearUserTokenCache()
-             {
-                 using (var db = new ApplicationDbContext())
-                 {
-                     var cacheEntries = db.UserTokenCacheList
-                         .ToArray();
-                     db.UserTokenCacheList.RemoveRange(cacheEntries);
-                     db.SaveChanges();
-                 }
-             }
-         }
-     }
-   ```
-
-​	This class is used by Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext to store access and refresh tokens.
-
-​	To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Common/Models/AdalTokenCache.cs) in the Demo app.
-
-5.  Add a new folder **Utils**  to the  **EDUGraphAPI.Common** project at the root. Add a new file named **AuthenticationHelper.cs** in **Utils** folder of the **EDUGraphAPI.Common** project, remove all generated code and paste the following. 
-
-
-   ```
+   ```c#
    using EDUGraphAPI.Models;
    using Microsoft.IdentityModel.Clients.ActiveDirectory;
    using System.Security.Claims;
@@ -298,13 +296,13 @@ All code referenced in these instructions is also used in the associated files i
            /// </remarks>
            Application
        }
-    
+
        /// <summary>
        /// A static helper class used to get access token, authentication result, authentication context and instances of service client.
        /// </summary>
        public static class AuthenticationHelper
        {
-    
+
            /// <summary>
            /// Get an instance of AuthenticationContext
            /// </summary>
@@ -313,7 +311,7 @@ All code referenced in these instructions is also used in the associated files i
                var tenantID = claimsIdentity.GetTenantId();
                var userId = claimsIdentity.GetObjectIdentifier();
                var signedInUserID = permissions == Permissions.Delegated ? userId : tenantID;
-    
+
                var authority = string.Format("{0}{1}", Constants.AADInstance, tenantID);
                var tokenCache = new AdalTokenCache(signedInUserID);
                return new AuthenticationContext(authority, tokenCache);
@@ -328,7 +326,7 @@ All code referenced in these instructions is also used in the associated files i
 
 6. Add a new file named **Startup.Auth.AAD.cs** in **App_Start** folder of the **EDUGraphAPI.Web** project, remove all generated code and paste the following. 
 
-   ```
+   ```c#
    using EDUGraphAPI.Data;
    using EDUGraphAPI.Utils;
    using Microsoft.IdentityModel.Clients.ActiveDirectory;
@@ -345,13 +343,13 @@ All code referenced in these instructions is also used in the associated files i
        public partial class Startup
        {
            private ApplicationDbContext db = new ApplicationDbContext();
-    
+
            public void ConfigureAADAuth(IAppBuilder app)
            {
                app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
-    
+
                app.UseCookieAuthentication(new CookieAuthenticationOptions { });
-    
+
                app.UseOpenIdConnectAuthentication(
                    new OpenIdConnectAuthenticationOptions
                    {
@@ -374,13 +372,13 @@ All code referenced in these instructions is also used in the associated files i
                                string appBaseUrl = context.Request.Scheme + "://" + context.Request.Host + context.Request.PathBase;
                                context.ProtocolMessage.RedirectUri = appBaseUrl + "/";
                                context.ProtocolMessage.PostLogoutRedirectUri = appBaseUrl;
-    
+
                                return Task.FromResult(0);
                            },
                            AuthorizationCodeReceived = async (context) =>
                            {
                                var identity = context.AuthenticationTicket.Identity;
-    
+
                                // Get token with authorization code
                                var redirectUri = new Uri(HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path));
                                var credential = new ClientCredential(Constants.AADClientId, Constants.AADClientSecret);
@@ -403,13 +401,13 @@ All code referenced in these instructions is also used in the associated files i
    }
    ```
 
-   This is a classed used to define AAD authentication that will be added into the OWIN runtime.
+    This is a classed used to define AAD authentication that will be added into the OWIN runtime.
 
-   To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/App_Start/Startup.Auth.AAD.cs) in the Demo app.
+    To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/App_Start/Startup.Auth.AAD.cs) in the Demo app.
 
 7. Open **Startup.cs** on the root of **EDUGraphAPI.Web** project. Edit the method named **Configuration** and paste the following. 
 
-   ```c#
+   ```
            public void Configuration(IAppBuilder app)
            {
                ConfigureIdentityAuth(app);
@@ -418,9 +416,10 @@ All code referenced in these instructions is also used in the associated files i
            }
    ```
 
-   This will add AAD authentication provider into the OWIN runtime.
+      This will add AAD authentication provider into the OWIN runtime.
 
-   To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/Startup.cs) in the Demo app.
+      To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/Startup.cs) in the Demo app.
+
 
 8. Add a new file **_ExternalLoginsListPartial.cshtml** in the folder **Views/Account** of **EDUGraphAPI.Web** project.  Remove all generated code and paste the following.  
 
@@ -545,17 +544,16 @@ All code referenced in these instructions is also used in the associated files i
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using System.Web;
-    ```
 
 
     namespace EDUGraphAPI.Web.Controllers
     {
-    
+
         public class AccountController : Controller
         {
             private ApplicationSignInManager signInManager;
             private ApplicationUserManager userManager;
-    
+
             private ApplicationService applicationService;
 
 
@@ -565,19 +563,19 @@ All code referenced in these instructions is also used in the associated files i
                 this.userManager = userManager;
                 this.signInManager = signInManager;
                 this.applicationService = applicationService;
-    
+
             }
-    
+
             //
             // GET: /Account/Login
             [AllowAnonymous]
             public ActionResult Login(string returnUrl)
             {
                 ViewBag.ReturnUrl = returnUrl;
-    
+
                 return View();
             }
-    
+
             //
             // POST: /Account/Login
             [HttpPost]
@@ -589,7 +587,7 @@ All code referenced in these instructions is also used in the associated files i
                 {
                     return View(model);
                 }
-    
+
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, change to shouldLockout: true
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
@@ -619,7 +617,7 @@ All code referenced in these instructions is also used in the associated files i
                 EducationRegisterViewModel model = new EducationRegisterViewModel();
                 return View(model);
             }
-    
+
             //
             // POST: /Account/Register
             [HttpPost]
@@ -634,18 +632,18 @@ All code referenced in these instructions is also used in the associated files i
                     if (result.Succeeded)
                     {
                         await signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-    
+
                         // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                         // Send an email with this link
                         // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                         // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                         // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-    
+
                         return RedirectToAction("Index", "Home");
                     }
                     AddErrors(result);
                 }
-    
+
                 // If we got this far, something failed, redisplay form
                 return View(model);
             }
@@ -672,12 +670,12 @@ All code referenced in these instructions is also used in the associated files i
             {
                 // The line of code below is used to fix a bug that O365 accounts could not login in some cases.
                 Session["AnyName"] = "AnyValue";
-    
+
                 // Request a redirect to the external login provider
                 return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account",
                     new { ReturnUrl = returnUrl }));
             }
-    
+
             //
             // GET: /Account/ExternalLoginCallback
             [AllowAnonymous]
@@ -690,7 +688,7 @@ All code referenced in these instructions is also used in the associated files i
                     var authResult = await AuthenticationManager.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationType);
                     loginInfo = GetExternalLoginInfo(authResult);
                 }
-    
+
                 return RedirectToLocal(returnUrl);
 
 
@@ -698,10 +696,10 @@ All code referenced in these instructions is also used in the associated files i
             private ExternalLoginInfo GetExternalLoginInfo(AuthenticateResult result)
             {
                 if ((result == null) || (result.Identity == null)) return null;
-    
+
                 var claim = result.Identity.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
                 if (claim == null) return null;
-    
+
                 var name = result.Identity.Name;
                 if (name != null) name = name.Replace(" ", "");
                 var str2 = result.Identity.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
@@ -718,7 +716,7 @@ All code referenced in these instructions is also used in the associated files i
             #region Helpers
             // Used for XSRF protection when adding external logins
             private const string XsrfKey = "XsrfId";
-    
+
             private IAuthenticationManager AuthenticationManager
             {
                 get
@@ -726,7 +724,7 @@ All code referenced in these instructions is also used in the associated files i
                     return HttpContext.GetOwinContext().Authentication;
                 }
             }
-    
+
             private void AddErrors(IdentityResult result)
             {
                 foreach (var error in result.Errors)
@@ -734,7 +732,7 @@ All code referenced in these instructions is also used in the associated files i
                     ModelState.AddModelError("", error);
                 }
             }
-    
+
             private ActionResult RedirectToLocal(string returnUrl)
             {
                 if (Url.IsLocalUrl(returnUrl))
@@ -743,25 +741,25 @@ All code referenced in these instructions is also used in the associated files i
                 }
                 return RedirectToAction("Index", "Home");
             }
-    
+
             internal class ChallengeResult : HttpUnauthorizedResult
             {
                 public ChallengeResult(string provider, string redirectUri)
                     : this(provider, redirectUri, null)
                 {
                 }
-    
+
                 public ChallengeResult(string provider, string redirectUri, string userId)
                 {
                     LoginProvider = provider;
                     RedirectUri = redirectUri;
                     UserId = userId;
                 }
-    
+
                 public string LoginProvider { get; set; }
                 public string RedirectUri { get; set; }
                 public string UserId { get; set; }
-    
+
                 public override void ExecuteResult(ControllerContext context)
                 {
                     var properties = new AuthenticationProperties { RedirectUri = RedirectUri };
@@ -773,14 +771,15 @@ All code referenced in these instructions is also used in the associated files i
                 }
             }
             #endregion
-    
+
         }
     }
-    ​```
-    
+    ```
+
     **ActionResult** named **ExternalLogin** is added to handle O365 user login and then redirect to a basic page.
-    
+
     To see how this file works in the Demo app, refer to the file located [here](../src/EDUGraphAPI.Web/Controllers/AccountController.cs) in the Demo app.
+
 
 13. Deploy the application locally by pressing F5. 
 
