@@ -165,7 +165,7 @@ namespace EDUGraphAPI.Web.Services
             var school = await educationServiceClient.GetSchoolAsync(schoolId);
             var section = await educationServiceClient.GetSectionAsync(classId);
             var driveRootFolder = await group.Drive.Root.Request().GetAsync();
-            var schoolTeachers = await educationServiceClient.GetTeachersAsync(school.SchoolNumber);
+            var schoolTeachers = await educationServiceClient.GetAllTeachersAsync(school.SchoolNumber);
             foreach(var sectionTeacher in section.Teachers)
             {
                 schoolTeachers = schoolTeachers.Where( t=> t.O365UserId!= sectionTeacher.O365UserId).ToArray();
