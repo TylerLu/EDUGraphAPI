@@ -256,6 +256,10 @@
                 "description": "Page action."
               },
               {
+                "title": "AddCoTeacher",
+                "description": "Add a co-teacher to a class."
+              },
+              {
                 "title": "GetSchoolsServiceAsync",
                 "description": "Initialize school services."
               }
