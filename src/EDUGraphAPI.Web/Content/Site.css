@@ -266,7 +266,7 @@ textarea {
 .class-details .b-title{font-family:'Helvetica Neue LT Std Th'}
 .coursedetail {position: relative;}
 .coursedetail .col-md-6{padding:12px 0 6px 0;}
-.coursedetail .col-md-6 span:not(#termdate):not(#termdate-separator){font-family:'Helvetica Neue LT Std Bold'}
+.coursedetail .col-md-6 span:not(#termdate):not(#termdate-separator):not(.coteacher-name){font-family:'Helvetica Neue LT Std Bold'}
 .coursedetail .col-md-6:last-child{padding:12px 0 6px 0;}
 .coursedetail .col-md-6:last-child > b{color:#F7F7F7;}
 .coursedetail .col-md-6:last-child > b:first-child{color:#333;}
