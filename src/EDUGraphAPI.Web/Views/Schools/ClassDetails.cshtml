@@ -210,14 +210,14 @@
                         @foreach (var stu in Model.Section.Students)
                         {
                             var containerClass = "unsaved";
-                            var style = "";
+                            var style = string.Format("background-color:{0}", stu.FavoriteColor);
                             if (stu.Position != 0)
                             {
                                 containerClass = "white";
                                 if (Model.O365UserId == stu.O365UserId)
                                 {
                                     containerClass = "green";
-                                    style = string.Format("background-color:{0}", Model.MyFavoriteColor);
+
                                 }
                             }
                             <div class="deskcontainer @containerClass" style="@style" position="@stu.Position" userid="@stu.O365UserId">
