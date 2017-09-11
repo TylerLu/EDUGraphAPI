@@ -58,16 +58,24 @@
                     <div class="close"><img src="/Images/close.png"></div>
                     <div class="title">Select a teacher</div>
                     <div class="list">
-                        <ul>
-                            @foreach (var teacher in Model.SchoolTeachers)
-                            {
-                                <li>
-                                    <a href="@Url.Action("AddCoTeacher", new { schoolId = Model.School.Id, sectionId = Model.Section.Id, userId = teacher.O365UserId })">
-                                        <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = teacher.O365UserId })" /> @teacher.DisplayName 
-                                    </a>
-                                </li>
-                            }
-                        </ul>
+                        @if (Model.SchoolTeachers.Count() == 0)
+                        {
+                            <div > There is no data available at this time.</div>
+                        }
+                        else
+                        {
+                            <ul>
+                                @foreach (var teacher in Model.SchoolTeachers)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("AddCoTeacher", new { schoolId = Model.School.Id, sectionId = Model.Section.Id, userId = teacher.O365UserId })">
+                                            <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = teacher.O365UserId })" /> @teacher.DisplayName
+                                        </a>
+                                    </li>
+                                }
+                            </ul>                        
+                        }
+
                     </div>
                 </div>
             }
