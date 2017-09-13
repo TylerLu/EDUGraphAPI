@@ -256,6 +256,10 @@
                 "description": "Page action."
               },
               {
+                "title": "AddCoTeacher",
+                "description": "Add a co-teacher to a class."
+              },
+              {
                 "title": "GetSchoolsServiceAsync",
                 "description": "Initialize school services."
               }
@@ -351,7 +355,7 @@
         ]
       },
       {
-        "title": "Dispaly, edit and save students charts",
+        "title": "Display, edit and save students charts",
         "tab": "#seatingchart",
         "files": [
           {
