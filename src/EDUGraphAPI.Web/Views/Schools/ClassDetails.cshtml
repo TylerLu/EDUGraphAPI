@@ -149,9 +149,13 @@
                                 <td>@assignment.Status</td>
                                 <td>
 
-                                <a class="detaillink" data-status="@assignment.Status" data-id="@assignment.Id" 
-                                   data-dueDate="@(string.IsNullOrEmpty(assignment.DueDateTime) ? "": Convert.ToDateTime(assignment.DueDateTime).ToString("M/dd/yyyy"))" 
-                                   data-title="@assignment.DisplayName" href="javascript:void(0)" data-resourceFiles="@assignment.ResourceFiles">Details</a>
+                                <a class="detaillink" 
+                                   data-status="@assignment.Status" 
+                                   data-id="@assignment.Id" 
+                                   data-dueDate="@assignment.DueDateTime" 
+                                   data-title="@assignment.DisplayName" 
+                                   data-allowlate="@Convert.ToString(assignment.AllowLateSubmissions)" 
+                                   href="javascript:void(0)">Details</a>
                                 @if (!Model.IsStudent)
                                 {
                                     <span>|</span>
@@ -279,6 +283,7 @@
                                     <div class="modal-body">
                                         <div><h5 class="assignment-title"></h5></div>
                                         <div><h5 class="due-date"></h5></div>
+                                        
                                         <div class="row resource-upload">
                                             <h5 class="resources-title col-md-8"></h5>
                                             <button type="button" class="btn btn-primary btn-new">+ New</button>
@@ -306,6 +311,7 @@
                                     <div class="modal-body">
                                         <div><h5 class="assignment-title"></h5></div>
                                         <div><h5 class="due-date"></h5></div>
+                                        <div><h5 class="allow-late"></h5></div>
                                         <div class="row">
                                             <h5 class="resources-title col-md-8"></h5>
                                         </div>

@@ -12,11 +12,18 @@
                 _assignment_api.resetAssignmentDetailForm();
 
                 var assignmentId = $(this).data("id");
-                var assignmentDueDate = $(this).data("duedate");
+                var dueDateUTC = $(this).data("duedate");
+                var assignmentDueDate = moment.utc(dueDateUTC).format("M/DD/YYYY");
                 var assignmentTitle = $(this).data("title");
                 var assignmentStatus = $(this).data("status");
+                
                 if (_isStudent) {
-                    _assignment_api.showAssignmentDetailForStudent(assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus);
+                    var isallowlate = $(this).data("allowlate") === "True";
+                    var disableButton = false;
+                    if (!isallowlate && moment.utc(dueDateUTC) < moment()) {
+                        disableButton = true;
+                    }
+                    _assignment_api.showAssignmentDetailForStudent(assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus, disableButton, isallowlate);
                 }
                 else {
                     _assignment_api.showAssignmentDetailForTeacher(assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus);
@@ -166,27 +173,36 @@
             if ($(resourceList).find(".emptyHint").length > 0) {
                 $(resourceList).find(".emptyHint").remove()
             }
-
-            for(var i = 0; i < files.length; i++) {
-                var f = files[i];
-                var bexist = false;
-                $(resourceList).find(itemhtml).each(function () {
-                    if ($(this).html() === f.name) {
-                        bexist = true;
-                        return false;
+            if ($(resourceList).find(itemhtml).length >= 5) {
+                $alertContrl.find("span").html("You may only attach up to 5 files.");
+                $alertContrl.fadeTo(2000, 500).slideUp(500, function () {
+                    $alertContrl.slideUp(500);
+                });
+            }
+            else {
+               for(var i = 0; i < files.length; i++) {
+                    var f = files[i];
+                    var bexist = false;
+                    $(resourceList).find(itemhtml).each(function () {
+                        if ($(this).html() === f.name) {
+                            bexist = true;
+                            return false;
+                        }
+                    })
+                    if (bexist) {
+                        $alertContrl.find("span").html("A file named " + f.name + " is already attached.");
+                        $alertContrl.fadeTo(2000, 500).slideUp(500, function () {
+                            $alertContrl.slideUp(500);
+                        });
                     }
-                })
-                if (bexist) {
-                    $alertContrl.find("span").html("A file named " + f.name + " is already attached.");
-                    $alertContrl.fadeTo(2000, 500).slideUp(500, function () {
-                        $alertContrl.slideUp(500);
-                    });
-                }
-                else {
-                    $("<" + itemhtml + ">" + f.name + "</" + itemhtml + ">").appendTo(resourceList);
-                    _assignment_api.storedFiles.push(f.name);
+                    else {
+                        $("<" + itemhtml + ">" + f.name + "</" + itemhtml + ">").appendTo(resourceList);
+                        _assignment_api.storedFiles.push(f.name);
+                    }
                 }
             }
+
+
             //$resourceNameListInput.val(_assignment_api.storedFiles);
             $fileContrl.hide();
 
@@ -297,11 +313,13 @@
             });
 
         },
-        showAssignmentDetailForStudent: function (assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus) {
+        showAssignmentDetailForStudent: function (assignmentId, assignmentTitle, assignmentDueDate, assignmentStatus, disableButton, isallowlate) {
             var sectionId = _classId;
             var detailForm = $("#assignment-detail-form");
             detailForm.find(".assignment-title").text(assignmentTitle);
             detailForm.find(".due-date").text("Due Date: " + assignmentDueDate);
+            detailForm.find(".allow-late").text("Late turn-in allowed: " + (isallowlate ? "Yes": "No"));
+            
             detailForm.find(".resources-title").text("Resources for " + assignmentTitle);
             detailForm.find(".handin-title").text("Hand ins for " + assignmentTitle);
             
@@ -311,6 +329,10 @@
 
             $("input[name='assignmentId']").val(assignmentId);
             $("input[name='assignmentStatus']").val(assignmentStatus);
+
+            detailForm.find(".btn-submit").attr("disabled", disableButton);
+            detailForm.find(".btn-upload").attr("disabled", disableButton);
+            
 
             $.ajax({
                 type: 'GET',
