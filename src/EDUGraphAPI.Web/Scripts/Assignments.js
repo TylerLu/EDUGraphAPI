@@ -261,15 +261,15 @@
                                             resourcesListHtml += "<tr><td colspan='2' class='files'>" + data[i].Resources[j].Resource.DisplayName + "</td></tr>";
                                         }
                                     }
-                                } else {
-                                    resourcesListHtml += "<tr><td colspan='2' class='files'>There is no resources available for this user.</td></tr>";
-                                }
+                                } //else {
+                                   // resourcesListHtml += "<tr><td colspan='2' class='files'>There is no resources available for this user.</td></tr>";
+                                //}
                             }
                             resourcesListHtml += "</tr>"
                         }
-                    } else {
-                        resourcesListHtml = "<tr><td colspan='2'>There is no data available for this page at this time.</td></tr>";
-                    }
+                    } //else {
+                       // resourcesListHtml = "<tr><td colspan='2'>There is no data available for this page at this time.</td></tr>";
+                    //}
                     $("#assignment-submissions-table tbody").html(resourcesListHtml);
                 }
             });
@@ -305,9 +305,9 @@
                         for (var i = 0; i < data.length; i++) {
                             resourcesListHtml += '<li data-id="' + data[i].Id + '">' + data[i].Resource.DisplayName + '</li>';
                         }
-                    } else {
-                        resourcesListHtml = "<li class='emptyHint'>There is no data available for this page at this time.</li>";
-                    }
+                    } //else {
+                        //resourcesListHtml = "<li class='emptyHint'>There is no data available for this page at this time.</li>";
+                    //}
                     detailForm.find(".resource-list").html(resourcesListHtml);
                 }
             });
@@ -343,9 +343,9 @@
                         for (var i = 0; i < data.resources.length; i++) {
                             resourcesListHtml += '<li data-id="' + data.resources[i].Id + '">' + data.resources[i].Resource.DisplayName + '</li>';
                         }
-                    } else {
-                        resourcesListHtml = "<li>There is no data available for this page at this time.</li>";
-                    }
+                    } //else {
+                    //    resourcesListHtml = "<li>There is no data available for this page at this time.</li>";
+                    //}
                     detailForm.find(".resource-list").html(resourcesListHtml);
 
                     var submissionsListHtml = "";
@@ -356,9 +356,9 @@
                         for (var i = 0; i < data.submission.Resources.length; i++) {
                             submissionsListHtml += '<li data-id="' + data.submission.Resources[i].Id + '">' + data.submission.Resources[i].Resource.DisplayName + '</li>';
                         }
-                    } else {
-                        submissionsListHtml = "<li class='emptyHint'>There is no data available for this page at this time.</li>";
-                    }
+                    } //else {
+                       // submissionsListHtml = "<li class='emptyHint'>There is no data available for this page at this time.</li>";
+                    //}
                     detailForm.find(".handin-list").html(submissionsListHtml);
                 }
             });
