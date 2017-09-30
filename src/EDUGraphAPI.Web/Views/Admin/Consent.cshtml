@@ -1,0 +1,28 @@
+﻿@*
+    *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
+    *   * See LICENSE in the project root for license information.
+*@
+@{
+    ViewBag.Title = "Admin Consent";
+    var consented = Request["consented"] == "true";
+}
+
+<h2>@ViewBag.Title</h2>
+<hr />
+@if (!consented)
+{
+    using (Html.BeginForm("Consent", null, FormMethod.Post, null))
+    {
+        <p>To use this application in this tenancy you must first provide Admin Consent. </p>
+        <p>Please click the button below to proceed.</p>
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <p class="form-group">
+            <input type="submit" value="Consent" class="btn btn-primary" />
+        </p>
+    }
+}
+else
+{
+    <p>Admin Consent has been applied.</p>
+}
