@@ -350,6 +350,7 @@ textarea {
 .students #documents .see-more, .students #conversations .see-more{float:right; margin-right:16px; padding:2px 10px; background:-prefix-linear-zgradient(top, #137A05, #28BB14); background:linear-gradient(to bottom, #137A05, #28BB14);}
 .students #documents .see-more a, .students #conversations .see-more a{color:#ffffff; font-size:12px; font-family:'Helvetica Neue LT Std Bold'; text-decoration:none}
 .students #assignments >div {width: 100%;float: left;}
+.students #assignmentslist th.header{width:23%;}
 .students .addassignment a{    color: white;
     background-color: #127605;
     height: 40px;
