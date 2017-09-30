@@ -75,31 +75,26 @@
                 _assignment_api.doReCreateUploadControl(e);
             });
             $("#duedate").datepicker();
-            $('#name').change(function (e) {
-                name = $(this).val();
-                if (name && name !== '') {
-                    $("#errorMessages li.name").remove();
-                }
-            });
-            $('#duedate').change(function (e) {
-                name = $(this).val();
-                if (name && name !== '') {
-                    $("#errorMessages li.duedate").remove();
-                }
-            });
+
         },
         saveNewAssignmentSubmit: function (status) {
             var name = $("#name").val();
             var duedate = $("#duedate").val();
             if (!name || name === '') {
-                $("#errorMessages li.name").remove();
-                $("<li class='name'>The Name field is required.</li>").appendTo("#errorMessages");
+                var $alertContrl = $("#new-assignment .assignment-alert");
+                $alertContrl.find("span").html("The Name field is required.");
+                $alertContrl.fadeTo(2000, 500).slideUp(500, function () {
+                    $alertContrl.slideUp(500);
+                });
                 return;
             }
 
             if (!duedate || duedate === '') {
-                $("#errorMessages li.duedate").remove();
-                $("<li class='duedate'>The Due Date field is required.</li>").appendTo("#errorMessages");
+                var $alertContrl = $("#new-assignment .assignment-alert");
+                $alertContrl.find("span").html("The Due Date field is required.");
+                $alertContrl.fadeTo(2000, 500).slideUp(500, function () {
+                    $alertContrl.slideUp(500);
+                });
                 return;
             }
 
