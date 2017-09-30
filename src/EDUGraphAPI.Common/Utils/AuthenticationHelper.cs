@@ -66,6 +66,20 @@ namespace EDUGraphAPI.Utils
             return new EducationServiceClient(serviceRoot, () => Task.FromResult(accessToken));
         }
 
+        public static async Task<EducationServiceClient> GetAssignmentServiceClientAsync(Permissions permissions = Permissions.Delegated)
+        {
+            var accessToken = await GetAccessTokenAsync(Constants.Resources.Assignment, permissions);
+            var serviceRoot = new Uri(new Uri(Constants.Resources.Assignment), Constants.Resources.AssignmentVersion);
+            return new EducationServiceClient(serviceRoot, () => Task.FromResult(accessToken));
+        }
+
+        public static async Task<GraphServiceClient> GetGraphAssignmentServiceClientAsync(Permissions permissions = Permissions.Delegated)
+        {
+            var accessToken = await GetAccessTokenAsync(Constants.Resources.Assignment, permissions);
+            var serviceRoot = Constants.Resources.Assignment + "/v1.0/" + ClaimsPrincipal.Current.GetTenantId();
+            return new GraphServiceClient(serviceRoot, new BearerAuthenticationProvider(accessToken));
+        }
+
         /// <summary>
         /// Get an instance of ActiveDirectoryClient from the specified AuthenticationResult
         /// </summary>

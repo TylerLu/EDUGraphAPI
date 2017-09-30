@@ -3,11 +3,13 @@
  *   * See LICENSE in the project root for license information.  
  */
 using EDUGraphAPI.Data;
+using EDUGraphAPI.Utils;
 using EDUGraphAPI.Web.Models;
 using EDUGraphAPI.Web.ViewModels;
 using Microsoft.Education;
 using Microsoft.Education.Data;
 using Microsoft.Graph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,6 +29,84 @@ namespace EDUGraphAPI.Web.Services
         {
             this.educationServiceClient = educationServiceClient;
             this.dbContext = dbContext;
+        }
+
+        public async Task<Assignment[]> GetAssignmentsByClassId(string id)
+        {
+            var result = await educationServiceClient.GetAssignmentsByClassIdAsync(id);
+            foreach (var item in result)
+            {
+                item.ResourceFiles = Assignment.GetResourcesFiles(item.Resources);
+            }
+            return result;
+        }
+
+        public async Task<Assignment> CreateAssignment(Assignment assignment)
+        {
+            var result = await educationServiceClient.CreateAssignmentAsync(assignment);
+            return result;
+        }
+
+        public async Task<EducationAssignmentResource> AddAssignmentResourcesAsync(string classId, string assignmentId,string fileName, string resourceUrl)
+        {
+            return await educationServiceClient.AddAssignmentResourcesAsync(classId, assignmentId,fileName,resourceUrl);
+        }
+
+        public async Task<Assignment> PublishAssignmentAsync(string classId, string assignmentId)
+        {
+            return await educationServiceClient.PublishAssignmentAsync(classId, assignmentId);
+        }
+
+        public async Task<EducationAssignmentResource> AddSubmissionResourceAsync(string classId, string assignmentId,string submissionId, string fileName, string resourceUrl)
+        {
+            return await educationServiceClient.AddSubmissionResourceAsync(classId, assignmentId, submissionId, fileName, resourceUrl);
+        }
+
+        public async Task<EducationAssignmentResource[]> GetAssignmentResourcesAsync(string sectionId, string assignmentId)
+        {
+            var result = await educationServiceClient.GetAssignmentResourcesAsync(sectionId, assignmentId);
+            return result;
+        }
+
+        public async Task<Assignment> GetAssignmentByIdAsync(string sectionId, string assignmentId)
+        { 
+             var result = await educationServiceClient.GetAssignmentAsync(sectionId, assignmentId);
+            return result;
+        }
+
+        public async Task<Submission[]> GetAssignmentSubmissions(string sectionId, string assignmentId)
+        {
+            var result = await educationServiceClient.GetAssignmentSubmissionsAsync(sectionId, assignmentId);
+            foreach (var item in result)
+            {
+                if (null != item.SubmittedBy.User && !string.IsNullOrEmpty( item.SubmittedBy.User.Id ))
+                {
+                    item.SubmittedBy.User.DisplayName = await GetUsername(item.SubmittedBy.User.Id);
+                }
+                if (!string.IsNullOrEmpty(item.SubmittedDateTime))
+                {
+                    item.SubmittedDateTime = Convert.ToDateTime(item.SubmittedDateTime).ToShortDateString();
+                }
+                else
+                {
+                    item.SubmittedDateTime = "";
+                }
+                item.Resources = (await educationServiceClient.GetSubmissionResourcesAsync(sectionId, assignmentId, item.Id)).ToList();
+            }
+            return result;
+        }
+
+        public async Task<Submission[]> GetAssignmentSubmissionByUserAsync(string sectionId, string assignmentId,string userId)
+        {
+            var result = await educationServiceClient.GetAssignmentSubmissionsByUserAsync(sectionId, assignmentId, userId);
+            return result;
+        }
+        private async Task<string>  GetUsername(string userId)
+        {
+            var client = await AuthenticationHelper.GetGraphServiceClientAsync(Permissions.Application);
+            var user = await client.Users[userId].Request().GetAsync();
+            return user.DisplayName;
+
         }
 
         /// <summary>
@@ -165,6 +245,7 @@ namespace EDUGraphAPI.Web.Services
             var school = await educationServiceClient.GetSchoolAsync(schoolId);
             var section = await educationServiceClient.GetSectionAsync(classId);
             var driveRootFolder = await group.Drive.Root.Request().GetAsync();
+            
             var schoolTeachers = await educationServiceClient.GetAllTeachersAsync(school.SchoolNumber);
             foreach(var sectionTeacher in section.Teachers)
             {

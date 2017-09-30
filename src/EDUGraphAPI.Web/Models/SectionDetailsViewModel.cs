@@ -5,6 +5,8 @@
 using System.Collections.Generic;
 using Microsoft.Education.Data;
 using Microsoft.Graph;
+using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace EDUGraphAPI.Web.ViewModels
 {
@@ -26,5 +28,9 @@ namespace EDUGraphAPI.Web.ViewModels
         public string MyFavoriteColor { get; set; }
 
         public SectionUser[] SchoolTeachers { get; set; }
+
+        public Assignment[] Assignments { get; set; }
+
+
     }
 }
