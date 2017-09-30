@@ -307,6 +307,58 @@
         ]
       },
       {
+        "title": "Get students in this class",
+        "tab": "#assignments",
+        "files": [
+          {
+            "url": "/blob/master/src/Microsoft.Education/EducationServiceClient.cs",
+            "methods": [
+              {
+                "title": "GetAssignmentsByClassIdAsync",
+                "description": "Get a class's assignments."
+              },
+              {
+                "title": "CreateAssignmentAsync",
+                "description": "Create an assignment for a class."
+              },
+              {
+                "title": "AddAssignmentResourcesAsync",
+                "description": "Add resource to an assignment."
+              },
+              {
+                "title": "PublishAssignmentAsync",
+                "description": "Publish an assignment. Set its status from draft to published."
+              },
+              {
+                "title": "AddSubmissionResourceAsync",
+                "description": "Add resources to an assignment submission."
+              },
+              {
+                "title": "GetAssignmentAsync",
+                "description": "Get an assignment."
+              },
+              {
+                "title": "GetAssignmentResourcesAsync",
+                "description": "Get resources of an assignment."
+              },
+              {
+                "title": "GetAssignmentSubmissionsAsync",
+                "description": "Get submissions of an assignment."
+              },
+              {
+                "title": "GetAssignmentSubmissionsByUserAsync",
+                "description": "Get a student's assignment submissions."
+              },
+              {
+                "title": "GetSubmissionResourcesAsync",
+                "description": "Get a submission's resources."
+              }
+            ]
+          }
+
+        ]
+      },
+      {
         "title": "Get all conversations of current class",
         "tab": "#conversations",
         "files": [
