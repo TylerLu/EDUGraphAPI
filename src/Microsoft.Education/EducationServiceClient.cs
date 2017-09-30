@@ -4,11 +4,14 @@
  */
 using Microsoft.Education.Data;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -132,6 +135,8 @@ namespace Microsoft.Education
             return HttpGetObjectAsync<Student>("me");
         }
 
+
+
         /// <summary>
         /// You can get the current logged in user and check if that user is a teacher.
         /// Reference URL: https://msdn.microsoft.com/office/office365/api/student-rest-operations#get-current-user.
@@ -188,6 +193,175 @@ namespace Microsoft.Education
 
         #endregion
 
+        #region Assignments
+        //string classId
+
+        /// <summary>
+        /// Get a class's assignments.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationclass_list_assignments.md
+        /// </summary>
+        /// <param name="id">Class id.</param>
+        /// <returns></returns>
+        public Task<Assignment[]> GetAssignmentsByClassIdAsync(string id)
+        {
+            return HttpGetArrayAsync<Assignment>($"education/classes/{id}/assignments");
+        }
+        /// <summary>
+        /// Create an assignment.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationclass_post_assignments.md
+        /// </summary>
+        /// <param name="assignment"></param>
+        /// <returns></returns>
+        public Task<Assignment> CreateAssignmentAsync(Assignment assignment)
+        {
+            string url = $"education/classes/{assignment.ClassId}/assignments";
+            var assignmentObject = new JObject();
+            assignmentObject["displayName"] = assignment.DisplayName;
+            assignmentObject["status"] = assignment.Status;
+            assignmentObject["dueDateTime"] = assignment.DueDateTime;
+            var assignTo = new JObject();
+            assignTo["@odata.type"] = "#microsoft.graph.educationAssignmentClassRecipient";
+            assignmentObject["assignTo"] = assignTo;
+            var json  = JsonConvert.SerializeObject(assignmentObject);
+            return HttpPostAsync<Assignment>(url, json);
+        }
+
+        /// <summary>
+        /// Add resource to an assignment.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_post_resources.md
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="assignmentId"></param>
+        /// <param name="fileName"></param>
+        /// <param name="resourceUrl"></param>
+        /// <returns></returns>
+        public async Task<EducationAssignmentResource> AddAssignmentResourcesAsync(string classId, string assignmentId, string fileName, string resourceUrl)
+        {
+            string url = $"education/classes/{classId}/assignments/{assignmentId}/resources";
+            var jsonToPost = new JObject();
+
+            //below works for link type resources
+            //var link = new JObject();
+            //link["displayName"] = "Bing";
+            //link["link"] = "http://www.bing.com";
+            //link["@odata.type"] = "#microsoft.education.assignments.api.educationLinkResource";
+            //jsonToPost["resource"] = link;
+
+            //below try to post a file
+            var resource = new JObject();
+            resource["displayName"] = fileName;
+            resource["@odata.type"] = GetFileType(fileName); //This type must match real type.
+            var file = new JObject();
+            file["odataid"] = resourceUrl; 
+            resource["file"] = file;
+            jsonToPost["resource"] = resource;
+
+            var json = JsonConvert.SerializeObject(jsonToPost);
+            var result = await HttpPostAsync<EducationAssignmentResource>(url, json);
+            return result;
+        }
+
+        /// <summary>
+        /// Publish an assignment. Set its status from draft to publshed.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_update.md
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="assignmentId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public Task<Assignment> PublishAssignmentAsync(string classId, string assignmentId)
+        { 
+            string url = $"education/classes/{classId}/assignments/{assignmentId}/publish";
+            return HttpPostAsync<Assignment>(url, ""); ;
+        }
+
+        /// <summary>
+        /// Add resources to an assignment submission.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationsubmission_post_resources.md
+        /// </summary>
+        /// <param name="classId"></param>
+        /// <param name="assignmentId"></param>
+        /// <param name="fileName"></param>
+        /// <param name="resourceUrl"></param>
+        /// <returns></returns>
+        public async Task<EducationAssignmentResource> AddSubmissionResourceAsync(string classId, string assignmentId,string submissionId, string fileName, string resourceUrl)
+        {
+            string url = $"education/classes/{classId}/assignments/{assignmentId}/submissions/{submissionId}/resources";
+            var jsonToPost = new JObject();
+            var resource = new JObject();
+            resource["displayName"] = fileName;
+            resource["@odata.type"] = GetFileType(fileName); //This type must match real type.
+            var file = new JObject();
+            file["odataid"] = resourceUrl;
+            resource["file"] = file;
+            jsonToPost["resource"] = resource;
+
+            var json = JsonConvert.SerializeObject(jsonToPost);
+            var result = await HttpPostAsync<EducationAssignmentResource>(url, json);
+            return result;
+        }
+        /// <summary>
+        /// Get an assignment.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_get.md
+        /// </summary>
+        /// <param name="sectionId"></param>
+        /// <param name="assignmentId"></param>
+        /// <returns></returns>
+        public Task<Assignment> GetAssignmentAsync(string sectionId, string assignmentId)
+        {
+            return HttpGetObjectAsync<Assignment>($"education/classes/{sectionId}/assignments/{assignmentId}");
+        }
+
+        /// <summary>
+        /// Get resources of an assignment.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationsubmission_list_resources.md
+        /// </summary>
+        /// <param name="sectionId"></param>
+        /// <param name="assignmentId"></param>
+        /// <returns></returns>
+        public Task<EducationAssignmentResource[]> GetAssignmentResourcesAsync(string sectionId, string assignmentId)
+        {
+            return HttpGetArrayAsync<EducationAssignmentResource>($"education/classes/{sectionId}/assignments/{assignmentId}/resources");
+        }
+        /// <summary>
+        /// Get submissions of an assignment.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_list_submissions.md
+        /// </summary>
+        /// <param name="sectionId"></param>
+        /// <param name="assignmentId"></param>
+        /// <returns></returns>
+        public Task<Submission[]> GetAssignmentSubmissionsAsync(string sectionId, string assignmentId)
+        {
+            return HttpGetArrayAsync<Submission>($"education/classes/{sectionId}/assignments/{assignmentId}/submissions");
+        }
+
+        /// <summary>
+        /// Get a user's assignment submissions.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationuser_list_assignments.md
+        /// </summary>
+        /// <param name="sectionId"></param>
+        /// <param name="assignmentId"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public Task<Submission[]> GetAssignmentSubmissionsByUserAsync(string sectionId, string assignmentId, string userId)
+        {
+            return HttpGetArrayAsync<Submission>($"education/classes/{sectionId}/assignments/{assignmentId}/submissions?$filter=submittedBy/user/id eq '{userId}'");
+        }
+
+        /// <summary>
+        /// Get a submission's resources.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationsubmission_list_resources.md
+        /// </summary>
+        /// <param name="sectionId"></param>
+        /// <param name="assignmentId"></param>
+        /// <param name="submissionId"></param>
+        /// <returns></returns>
+        public Task<EducationSubmissionResource[]> GetSubmissionResourcesAsync(string sectionId, string assignmentId, string submissionId)
+        {
+            return HttpGetArrayAsync<EducationSubmissionResource>($"education/classes/{sectionId}/assignments/{assignmentId}/submissions/{submissionId}/resources");
+        }
+
+        #endregion
         #region HttpGet
         private async Task<string> HttpGetAsync(string relativeUrl)
         {
@@ -199,6 +373,7 @@ namespace Microsoft.Education
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
+
 
         private async Task<T> HttpGetObjectAsync<T>(string relativeUrl)
         {
@@ -240,6 +415,51 @@ namespace Microsoft.Education
             }
             var responseString = await HttpGetAsync(relativeUrl);
             return JsonConvert.DeserializeObject<ArrayResult<T>>(responseString);
+        }
+        private async Task<T> HttpPostAsync<T>(string relativeUrl, string json)
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Authorization", await accessTokenGetter());
+            var uri = serviceRoot + "/" + relativeUrl;
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8,"application/json");
+            var response = await client.PostAsync(uri, stringContent);
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseString);
+        }
+
+        private async Task<T> HttpPatchAsync<T>(string relativeUrl, string json)
+        {
+            var client = new HttpClient();
+            var method = new HttpMethod("PATCH");
+            var uri = serviceRoot + "/" + relativeUrl;
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            var request = new HttpRequestMessage(method, uri)
+            {
+                Content = stringContent
+            };
+            client.DefaultRequestHeaders.Add("Authorization", await accessTokenGetter());
+            var response = await client.SendAsync(request);
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseString);
+        }
+
+        private string GetFileType(string fileName)
+        {
+            string defaultFileType = string.Empty;
+            string ext = Path.GetExtension(fileName);
+            switch (ext)
+            {
+                case ".docx":
+                    defaultFileType = "#microsoft.graph.educationWordResource";
+                    break;
+                case ".xlsx":
+                    defaultFileType = "#microsoft.graph.educationExcelResource";
+                    break;
+                default:
+                    defaultFileType = "#microsoft.graph.educationFileResource"; //"#microsoft.graph.educationFileResource";
+                    break;
+            }
+            return defaultFileType;
         }
         #endregion
     }
