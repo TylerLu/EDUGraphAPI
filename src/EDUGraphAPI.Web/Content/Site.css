@@ -378,8 +378,8 @@ textarea {
 #new-assignment-form  fieldset > *{margin:6px 0 6px 0;}
 #assignment-submissions-form button{float:left;}
 #assignment-submissions-form tbody td{text-align:left;}
-#assignment-submissions-form .files, #assignments .resource-list li, #assignments .handin-list li {background-color:#f5f5f5;}
-
+#assignment-submissions-form .files, #assignments .resource-list li, #assignments .handin-list li {padding-left:20px;background-color:#f5f5f5;}
+ #assignments .resource-list li, #assignments .handin-list li {padding-left:15px;}
 /*User info popup window*/
 .navbar-right a{color:white;text-decoration:none;}
 .userinfo .caret{color:white;font-size:20px;}
