@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noEmit": true,
+    "allowJs":  true,
+    "target": "esnext"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
