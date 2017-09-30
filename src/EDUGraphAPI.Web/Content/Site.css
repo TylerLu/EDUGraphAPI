@@ -380,6 +380,11 @@ textarea {
 #assignment-submissions-form tbody td{text-align:left;}
 #assignment-submissions-form .files, #assignments .resource-list li, #assignments .handin-list li {padding-left:20px;background-color:#f5f5f5;}
  #assignments .resource-list li, #assignments .handin-list li {padding-left:15px;}
+  .modal-dialog {
+    margin: 200px auto !important;
+  }
+  .uploadcontainer{    display: flex;
+    margin-top: 12px !important;}
 /*User info popup window*/
 .navbar-right a{color:white;text-decoration:none;}
 .userinfo .caret{color:white;font-size:20px;}
