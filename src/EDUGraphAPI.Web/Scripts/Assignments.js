@@ -120,7 +120,14 @@
             var selDiv = document.querySelector("#selectedFiles");
             if (!e.target.files) return;
             files = e.target.files;
-
+            if (_assignment_api.storedFiles.length == 5) {
+                var $alertContrl = $("#new-assignment .assignment-alert");
+                $alertContrl.find("span").html("You may only attach up to 5 files.");
+                $alertContrl.fadeTo(2000, 500).slideUp(500, function () {
+                    $alertContrl.slideUp(500);
+                });
+                return;
+            }
             for (var i = 0; i < files.length; i++) {
                 var f = files[i];
                 if (!_assignment_api.storedFiles.includes(f.name)) {
