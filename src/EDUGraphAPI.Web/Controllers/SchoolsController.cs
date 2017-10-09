@@ -240,15 +240,24 @@ namespace EDUGraphAPI.Web.Controllers
         private async Task<DriveItem> UploadFile(string classId, GraphServiceClient graphServiceClient, HttpPostedFileBase item, string resourceFolder)
         {
             string[] ids = GetIdsFromResourceFolder(resourceFolder);
-            var newItem = await graphServiceClient.Drives[ids[0]]
-                .Items[ids[1]].Children.Request().AddAsync(new DriveItem
-                {
-                    Name = item.FileName,
-                    File = new Microsoft.Graph.File()
-                });
-
+            var exsitItems = await graphServiceClient.Drives[ids[0]].Items[ids[1]].Children.Request().Filter($"Name eq '{item.FileName}'").GetAsync();
+            string itemId = string.Empty;
+            if(exsitItems.Count == 0)
+            {
+                var newItem = await graphServiceClient.Drives[ids[0]]
+                            .Items[ids[1]].Children.Request().AddAsync(new DriveItem
+                            {
+                                Name = item.FileName,
+                                File = new Microsoft.Graph.File()
+                            });
+                itemId = newItem.Id;
+            }
+            else
+            {
+                itemId = exsitItems[0].Id;
+            }
             return await graphServiceClient.Drives[ids[0]]
-                .Items[newItem.Id].Content.Request()
+                .Items[itemId].Content.Request()
             .PutAsync<DriveItem>(item.InputStream);
         }
 
