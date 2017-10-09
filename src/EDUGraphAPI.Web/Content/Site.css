@@ -385,6 +385,7 @@ textarea {
   }
   .uploadcontainer{    display: flex;
     margin-top: 12px !important;}
+  .uploadcontainer #uploaders{padding-left:5px;}
 /*User info popup window*/
 .navbar-right a{color:white;text-decoration:none;}
 .userinfo .caret{color:white;font-size:20px;}
