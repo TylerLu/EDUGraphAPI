@@ -156,7 +156,7 @@
                                    data-title="@assignment.DisplayName" 
                                    data-allowlate="@Convert.ToString(assignment.AllowLateSubmissions)" 
                                    href="javascript:void(0)">Details</a>
-                                @if (!Model.IsStudent)
+                                @if (!Model.IsStudent && assignment.Status != "draft")
                                 {
                                     <span>|</span>
                                     <a href="javascript:void(0)" class="submissionslink"  data-status="@assignment.Status" data-id="@assignment.Id" data-dueDate="@(string.IsNullOrEmpty(assignment.DueDateTime) ? "": Convert.ToDateTime(assignment.DueDateTime).ToString("M/dd/yyyy"))" data-title="@assignment.DisplayName" > Submissions</a>

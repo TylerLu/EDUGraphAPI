@@ -107,7 +107,10 @@
 
             $("#status").val(status);
             $("#new-assignment-form").submit();
-            //dialog.dialog("close");
+            $("#new-assignment button").each(function () {
+                $(this).attr('disabled', 'true');
+            });
+            $("input[name='fileUpload']").attr('disabled', 'true');
         },
         updateAssignmentDetail: function (status) {
             if (!_isStudent) {
@@ -119,6 +122,11 @@
             else {
                 $("#assignment-detail-form-student").submit();
             }
+
+            $("#assignment-detail-form button").each(function () {
+                $(this).attr('disabled', 'true');
+            });
+            $("input[name='newResource']").attr('disabled', 'true');
             
         },
         //Recreate upload contorl on new assignment form.
@@ -253,7 +261,7 @@
                     if (data && data.length > 0) {
                         for (var i = 0; i < data.length; i++) {
                             resourcesListHtml +="<tr>"
-                            resourcesListHtml += '<td>' + data[i].SubmittedBy.User.DisplayName + '</td><td>' + data[i].SubmittedDateTime + '</td>';
+                            resourcesListHtml += '<td>' + data[i].SubmittedBy.User.DisplayName + '</td><td>' + (data[i].SubmittedDateTime.length == 0 ? 'None' : data[i].SubmittedDateTime) + '</td>';
                             if (data[i].Resources) {
                                 if (data[i].Resources.length > 0) {
                                     for (var j = 0; j < data[i].Resources.length; j++) {
