@@ -85,7 +85,7 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 
      | API                            | Application Permissions                  | Delegated Permissions                    |
      | ------------------------------ | ---------------------------------------- | ---------------------------------------- |
-     | Microsoft Graph                | Read all users' full profiles<br> Read directory data | Read directory data<br>Access directory as the signed in user<br>Sign users in |
+     | Microsoft Graph                | Read all users' full profiles<br> Read directory data<br> Read all groups | Read directory data<br>Access directory as the signed in user<br>Sign users in<br> Have full access to all files user can access<br> Have full access to user files<br> Read users' class assignments without grades<br> Read and write users' class assignments without grades<br> Read users' class assignments and their grades<br> Read and write users' class assignments and their grades |
      | Windows Azure Active Directory | Read directory data                      | Sign in and read user profile<br>Read and write directory data |
 
      ![](/Images/aad-create-app-06.png)
