@@ -171,11 +171,14 @@ namespace EDUGraphAPI.Web.Controllers
             assignment.DisplayName = name;
             assignment.DueDateTime = Convert.ToDateTime(duedate + " " + duetime).ToString("yyyy'-'MM'-'ddTHH':'mm':'ss'Z'");
             assignment.AllowLateSubmissions = true;
-            assignment.Status = status; 
+            assignment.Status = "draft"; 
 
             var assignmentServices = await GetAssignmentsServiceAsync();
             assignment = await assignmentServices.CreateAssignment(assignment);
-
+            if (status == "assigned")
+            {
+                await assignmentServices.PublishAssignmentAsync(classId, assignment.Id);
+            }
             var graphServiceClient = await AuthenticationHelper.GetGraphAssignmentServiceClientAsync();
             foreach (HttpPostedFileBase item in fileUpload)
             {

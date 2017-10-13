@@ -73,7 +73,7 @@
                 _assignment_api.saveNewAssignmentSubmit('draft');
             });
             $("#new-assignment .btn-publish").click(function () {
-                _assignment_api.saveNewAssignmentSubmit('published');
+                _assignment_api.saveNewAssignmentSubmit('assigned');
             });
             $("#new-assignment .btn-cancel").click(function () {
                 _assignment_api.resetForm();

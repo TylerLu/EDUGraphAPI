@@ -262,8 +262,8 @@ namespace Microsoft.Education
         }
 
         /// <summary>
-        /// Publish an assignment. Set its status from draft to publshed.
-        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_update.md
+        /// Publish an assignment. Set its status from draft to published.
+        /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_publish.md
         /// </summary>
         /// <param name="classId"></param>
         /// <param name="assignmentId"></param>
