@@ -223,7 +223,7 @@ namespace EDUGraphAPI.Web.Controllers
         {
             var assignmentServices = await GetAssignmentsServiceAsync();
             var assignment = await assignmentServices.GetAssignmentByIdAsync(classId, assignmentId);
-            if(assignment.Status.Equals("draft") && assignmentStatus.Equals("published")){
+            if(assignment.Status.Equals("draft") && assignmentStatus.Equals("assigned")){
                 assignment = await assignmentServices.PublishAssignmentAsync(classId, assignmentId);
             }
             var graphServiceClient = await AuthenticationHelper.GetGraphAssignmentServiceClientAsync();

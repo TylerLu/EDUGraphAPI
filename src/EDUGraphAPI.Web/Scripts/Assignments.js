@@ -43,7 +43,7 @@
                 _assignment_api.updateAssignmentDetail('draft');
             });
             $("#assignment-detail-form .btn-publish").click(function () {
-                _assignment_api.updateAssignmentDetail('published');
+                _assignment_api.updateAssignmentDetail('assigned');
             });
             $("#assignment-detail-form .btn-update").click(function() {
                 _assignment_api.updateAssignmentDetail('');
