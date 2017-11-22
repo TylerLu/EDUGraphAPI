@@ -5,7 +5,6 @@
 using EDUGraphAPI.Infrastructure;
 using EDUGraphAPI.Models;
 using Microsoft.Azure.ActiveDirectory.GraphClient;
-using Microsoft.Education;
 using Microsoft.Graph;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System;
@@ -13,6 +12,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.Education;
 
 namespace EDUGraphAPI.Utils
 {
@@ -52,7 +52,7 @@ namespace EDUGraphAPI.Utils
         public static async Task<GraphServiceClient> GetGraphServiceClientAsync(Permissions permissions = Permissions.Delegated)
         {
             var accessToken = await GetAccessTokenAsync(Constants.Resources.MSGraph, permissions);
-            var serviceRoot = Constants.Resources.MSGraph + "/v1.0/" + ClaimsPrincipal.Current.GetTenantId();
+            var serviceRoot = Constants.Resources.MSGraph + "/" + Constants.Resources.MSGraphVersion;
             return new GraphServiceClient(serviceRoot, new BearerAuthenticationProvider(accessToken));
         }
 
@@ -90,11 +90,12 @@ namespace EDUGraphAPI.Utils
         }
 
         /// <summary>
+
         /// Get an instance of GraphServiceClient from the specified AuthenticationResult
         /// </summary>
         public static GraphServiceClient GetGraphServiceClient(AuthenticationResult result)
         {
-            var serviceRoot = Constants.Resources.MSGraph + "/v1.0/" + ClaimsPrincipal.Current.GetTenantId();
+            var serviceRoot = Constants.Resources.MSGraph + "/" + Constants.Resources.MSGraphVersion;
             return new GraphServiceClient(serviceRoot, new BearerAuthenticationProvider(result.AccessToken));
         }
 
@@ -122,10 +123,13 @@ namespace EDUGraphAPI.Utils
                 return await context.AcquireTokenSilentAsync(resource, clientCredential, userIdentifier);
             }
             else if (permissions == Permissions.Application)
+            {
                 return await context.AcquireTokenAsync(resource, clientCredential);
-
+            }
             else
+            {
                 throw new NotImplementedException();
+            }
         }
 
         /// <summary>

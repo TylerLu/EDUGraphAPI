@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Education;
 
 namespace EDUGraphAPI.Web.Controllers
 {
@@ -309,8 +310,7 @@ namespace EDUGraphAPI.Web.Controllers
         // GET: /Manage/AboutMe
         public async Task<ActionResult> AboutMe(bool? showSaveMessage)
         {
-            var model = new AboutMeViewModel();
-            model.FavoriteColors = Constants.FavoriteColors;
+            var model = new AboutMeViewModel {FavoriteColors = Constants.FavoriteColors};
 
             var userContext = await applicationService.GetUserContextAsync();
             if (userContext.User == null)
@@ -330,7 +330,8 @@ namespace EDUGraphAPI.Web.Controllers
 
             if (userContext.IsO365Account || userContext.AreAccountsLinked)
             {
-                var educationServiceClient = await AuthenticationHelper.GetEducationServiceClientAsync();
+                var educationServiceClient = EducationServiceClient.GetEducationServiceClient(
+                    await AuthenticationHelper.GetAccessTokenAsync(Constants.Resources.MSGraph, Permissions.Delegated));
                 var schoolsService = new SchoolsService(educationServiceClient, dbContext); 
                 model.Groups.AddRange(await schoolsService.GetMyClassesAsync());
             }

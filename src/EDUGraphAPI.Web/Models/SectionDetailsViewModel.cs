@@ -2,6 +2,9 @@
  *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
  *   * See LICENSE in the project root for license information.  
  */
+
+
+using Microsoft.Education;
 using System.Collections.Generic;
 using Microsoft.Education.Data;
 using Microsoft.Graph;
@@ -12,9 +15,9 @@ namespace EDUGraphAPI.Web.ViewModels
 {
     public class SectionDetailsViewModel
     {
-        public School School { get; set; }
+        public EducationSchool School { get; set; }
 
-        public Section Section { get; set; }
+        public EducationClass Class { get; set; }
         
         public Conversation[] Conversations { get; set; }
 
@@ -27,7 +30,7 @@ namespace EDUGraphAPI.Web.ViewModels
         public string O365UserId { get; set; }
         public string MyFavoriteColor { get; set; }
 
-        public SectionUser[] SchoolTeachers { get; set; }
+        public EducationUser[] SchoolTeachers { get; set; }
 
         public Assignment[] Assignments { get; set; }
 

@@ -18,7 +18,8 @@ using System.Threading.Tasks;
 namespace Microsoft.Education
 {
     /// <summary>
-    /// An instance of the EducationServiceClient class handles building requests, sending them to Office 365 Education API, and processing the responses.
+    /// An instance of the EducationServiceClient class handles building requests,
+    /// sending them to Office 365 Education API, and processing the responses.
     /// </summary>
     public class EducationServiceClient
     {
@@ -33,151 +34,135 @@ namespace Microsoft.Education
 
         #region schools
         /// <summary>
-        /// Get all schools that exist in the Azure Active Directory tenant. 
-        /// Reference URL: https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-all-schools
+        /// Get all schools that exist in the Office 365 tenant. 
         /// </summary>
         /// <returns></returns>
-        public async Task<School[]> GetSchoolsAsync()
+        public async Task<EducationSchool[]> GetSchoolsAsync()
         {
-            var schools = await HttpGetArrayAsync<School>("administrativeUnits");
-            return schools.Where(c => c.EducationObjectType == "School").ToArray();
+            var schools = await HttpGetArrayAsync<EducationSchool>("education/schools");
+            return schools.ToArray();
         }
 
         /// <summary>
         /// Get a school by using the object_id.
-        /// Reference URL: https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-a-school.
         /// </summary>
-        /// <param name="objectId">The Object ID of the school administrative unit in Azure Active Directory.</param>
+        /// <param name="objectId">The Object ID of the school administrative unit in Office 365.</param>
         /// <returns></returns>
-        public Task<School> GetSchoolAsync(string objectId)
+        public Task<EducationSchool> GetSchoolAsync(string objectId)
         {
-            return HttpGetObjectAsync<School>($"administrativeUnits/{objectId}");
+            return HttpGetObjectAsync<EducationSchool>($"education/schools/{objectId}");
         }
 
         #endregion
 
-        #region sections
+        #region classes
+
         /// <summary>
-        /// Get sections within a school.
-        /// Reference URL: https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-sections-within-a-school.
+        /// Get classes within a school.
         /// </summary>
         /// <param name="schoolId">The ID of the school in the School Information System (SIS).</param>
+        /// <param name="nextLink">The nextlink for a server-side paged collection.</param>
         /// <returns></returns>
-        public Task<ArrayResult<Section>> GetAllSectionsAsync(string schoolId, int top, string nextLink)
+        public async Task<ArrayResult<EducationClass>> GetAllClassesAsync(string schoolId, string nextLink)
         {
-            var relativeUrl = $"groups?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'";
-            return HttpGetArrayAsync<Section>(relativeUrl, top, nextLink);
-        }
-
-        /// <summary>
-        /// Get my sections
-        /// </summary>
-        /// <returns></returns>
-        public async Task<Section[]> GetMySectionsAsync(bool loadMembers = false)
-        {
-            var relativeUrl = $"me/memberOf/$/microsoft.graph.group";
-            var memberOf = await HttpGetArrayAsync<Section>(relativeUrl);
-            var sections = memberOf
-                .Where(i => i.EducationObjectType == "Section")
-                .ToArray();
-            if (loadMembers == false) return sections;
-
-            // Get sections with members
-            var tasks = new List<Task>();
-            var sectionBag = new ConcurrentBag<Section>();
-            foreach (var section in sections)
+            if (string.IsNullOrEmpty(schoolId))
             {
-                var task = Task.Run(async () =>
+                return new ArrayResult<EducationClass>
                 {
-                    var s = await GetSectionAsync(section.Id);
-                    sectionBag.Add(s);
-                });
-                tasks.Add(task);
+                    Value = new EducationClass[] { },
+                     NextLink = nextLink
+                };
             }
-            Task.WaitAll(tasks.ToArray());
-            return sectionBag.ToArray();
+            else
+            {
+                var relativeUrl = $"education/schools/{schoolId}/classes?$top=12";
+                return await HttpGetArrayAsync<EducationClass>(relativeUrl, nextLink);
+
+        
+            }
         }
 
+
         /// <summary>
-        /// Get my sections within a school
+        /// Get my classes
+        /// </summary>
+        /// <returns>The set of classes</returns>
+        public async Task<EducationClass[]> GetMyClassesAsync(bool loadMembers = false, string expandField = "members")
+        {
+            var relativeUrl = $"education/me/classes";
+
+            // Important to do this in one round trip, not in a sequence of calls.
+            if (loadMembers)
+            {
+                relativeUrl += "?$expand=" + expandField;
+            }
+
+            var memberOf = await HttpGetArrayAsync<EducationClass>(relativeUrl);
+            var classes = memberOf.ToArray();
+
+            return classes;
+        }
+
+
+        /// <summary>
+        /// Get my classes within a school
         /// </summary>
         /// <param name="schoolId">The ID of the school in the School Information System (SIS).</param>
-        /// <returns></returns>
-        public async Task<Section[]> GetMySectionsAsync(string schoolId)
+        /// <returns>The set of classes</returns>
+        public async Task<EducationClass[]> GetMyClassesAsync(string schoolId)
         {
-            var sections = await GetMySectionsAsync(true);
-            return sections
-                .Where(i => i.SchoolId == schoolId)
-                .ToArray();
+            if (string.IsNullOrEmpty(schoolId))
+            {
+                return new EducationClass[] { };
+            }
+            else
+            {
+                // First get classes with members
+                var classesWithMembers = await GetMyClassesAsync(true);
+
+                // Then get classes with schools - we can't get both at the same time today.
+                var classesWithSchools = await GetMyClassesAsync(true, "schools");
+                
+
+                //return classesWithMembers;
+                int i = 0;
+                var result = classesWithMembers
+                    .Where(c =>
+                    {
+                        return c.Id.Equals(classesWithSchools[i].Id, StringComparison.Ordinal) &&
+                            classesWithSchools[i++]
+                            .Schools.Any(s => schoolId.Equals(s.ExternalId, StringComparison.OrdinalIgnoreCase));
+                    })
+                    .ToArray();
+                foreach (var item in result)
+                {
+                    item.Teachers = item.Members.Where(c => c.PrimaryRole == EducationRole.Teacher).ToList();
+                }
+                return result;
+            }
         }
 
         /// <summary>
-        /// Get a section by using the object_id.
-        /// Reference URL: https://msdn.microsoft.com/office/office365/api/section-rest-operations#get-a-section.
+        /// Get a class by using the object_id.
         /// </summary>
-        /// <param name="sectionId">The Object ID of the section group in Azure Active Directory.</param>
-        /// <returns></returns>
-        public async Task<Section> GetSectionAsync(string sectionId)
+        /// <param name="classId">The ID of the class in Office 365.</param>
+        /// <returns>The class.</returns>
+        public async Task<EducationClass> GetClassAsync(string classId)
         {
-            return await HttpGetObjectAsync<Section>($"groups/{sectionId}?$expand=members");
+            return await HttpGetObjectAsync<EducationClass>($"education/classes/{classId}?$expand=members");
         }
 
         #endregion
 
         #region student and teacher
-        /// <summary>
-        /// You can get the current logged in user and check if that user is a student.
-        /// Reference URL: https://msdn.microsoft.com/office/office365/api/student-rest-operations#get-current-user.
-        /// </summary>
-        /// <returns></returns>
-        public Task<Student> GetStudentAsync()
-        {
-            return HttpGetObjectAsync<Student>("me");
-        }
-
-
 
         /// <summary>
-        /// You can get the current logged in user and check if that user is a teacher.
-        /// Reference URL: https://msdn.microsoft.com/office/office365/api/student-rest-operations#get-current-user.
+        /// Get the current logged in user.
         /// </summary>
-        /// <returns></returns>
-        public Task<Teacher> GetTeacherAsync()
+        /// <returns>User.</returns>
+        public Task<EducationUser> GetUserAsync()
         {
-            return HttpGetObjectAsync<Teacher>("me");
-        }
-
-        /// <summary>
-        /// Get members within a school
-        /// Reference URL: https://msdn.microsoft.com/en-us/office/office365/api/school-rest-operations#get-school-members
-        /// </summary>
-        /// <param name="objectId"></param>
-        /// <returns></returns>
-        public async Task<ArrayResult<SectionUser>> GetMembersAsync(string objectId, int top, string nextLink)
-        {
-            return await HttpGetArrayAsync<SectionUser>($"administrativeUnits/{objectId}/members", top, nextLink);
-        }
-
-        /// <summary>
-        /// Get students within a school
-        /// Reference URL: https://msdn.microsoft.com/en-us/office/office365/api/school-rest-operations#get-school-members
-        /// </summary>
-        /// <param name="schoolId"></param>
-        /// <returns></returns>
-        public async Task<ArrayResult<SectionUser>> GetStudentsAsync(string schoolId, int top, string nextLink)
-        {
-            return await HttpGetArrayAsync<SectionUser>($"users?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Student'", top, nextLink);
-        }
-
-        /// <summary>
-        /// Get teachers within a school
-        /// Reference URL: https://msdn.microsoft.com/en-us/office/office365/api/school-rest-operations#get-school-members
-        /// </summary>
-        /// <param name="schoolId"></param>
-        /// <returns></returns>
-        public async Task<ArrayResult<SectionUser>> GetTeachersAsync(string schoolId, int top, string nextLink)
-        {
-            return await HttpGetArrayAsync<SectionUser>($"users?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'", top, nextLink);
+           return HttpGetObjectAsync<EducationUser>("education/me");
         }
 
         /// <summary>
@@ -186,10 +171,24 @@ namespace Microsoft.Education
         /// </summary>
         /// <param name="schoolId"></param>
         /// <returns></returns>
-        public async Task<SectionUser[]> GetAllTeachersAsync(string schoolId)
+        public async Task<EducationUser[]> GetAllTeachersAsync(string schoolId)
         {
-            return await HttpGetArrayAsync<SectionUser>($"users?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'");
+            return await HttpGetArrayAsync<EducationUser>($"users?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Teacher'");
         }
+
+
+
+        /// <summary>
+        /// Get the current logged in user with expanded relationships suitab le for joining
+        /// </summary>
+        /// <returns>User.</returns>
+        public Task<EducationUser> GetJoinableUserAsync()
+        {
+            return HttpGetObjectAsync<EducationUser>("education/me?$expand=schools,classes");
+        }
+
+
+
 
         #endregion
 
@@ -369,6 +368,10 @@ namespace Microsoft.Education
             client.DefaultRequestHeaders.Add("Authorization", await accessTokenGetter());
 
             var uri = serviceRoot + "/" + relativeUrl;
+            if (relativeUrl.ToLower().IndexOf("https://") >= 0)
+            {
+                uri = relativeUrl;
+            }
             var response = await client.GetAsync(uri);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
@@ -383,37 +386,30 @@ namespace Microsoft.Education
 
         private async Task<T[]> HttpGetArrayAsync<T>(string relativeUrl)
         {
-            var responseString = await HttpGetAsync(relativeUrl);
+            string responseString = await HttpGetAsync(relativeUrl);
             var array = JsonConvert.DeserializeObject<ArrayResult<T>>(responseString);
-            List<T> result = new List<T>();
+            var result = new List<T>();
             result.AddRange(array.Value);
-            while (!string.IsNullOrEmpty(array.NextLink) && array.NextLink.IndexOf('?') >= 0)
+
+            // NEVER do path-math on a nextToken - they are defined as opaque
+            while (!string.IsNullOrEmpty(array.NextLink))
             {
-                var token = Regex.Match(array.NextLink, @"[$]skiptoken[=][^&]+", RegexOptions.Compiled).Value;
-                if (!string.IsNullOrEmpty(token))
-                {
-                    var str = relativeUrl.IndexOf('?') >= 0 ? "&" : "?";
-                    responseString = await HttpGetAsync(relativeUrl + str + token);
-                    array = JsonConvert.DeserializeObject<ArrayResult<T>>(responseString);
-                    result.AddRange(array.Value);
-                }
+                responseString = await HttpGetAsync(array.NextLink);
+                array = JsonConvert.DeserializeObject<ArrayResult<T>>(responseString);
+                result.AddRange(array.Value);
             }
             return result.ToArray();
         }
 
-        private async Task<ArrayResult<T>> HttpGetArrayAsync<T>(string relativeUrl, int top, string nextLink)
+        private async Task<ArrayResult<T>> HttpGetArrayAsync<T>(string relativeUrl, string nextLink)
         {
-            var str = relativeUrl.IndexOf('?') >= 0 ? "&" : "?";
-            relativeUrl += $"{str}$top={top}";
-            if (!string.IsNullOrEmpty(nextLink) && nextLink.IndexOf('?') >= 0)
+            // NEVER do path-math on a nextToken - they are defined as opaque
+            if (!string.IsNullOrEmpty(nextLink))
             {
-                var token = Regex.Match(nextLink, @"[$]skiptoken[=][^&]+", RegexOptions.Compiled).Value;
-                if (!string.IsNullOrEmpty(token))
-                {
-                    relativeUrl += $"&{token}";
-                }
+                relativeUrl = nextLink;
             }
-            var responseString = await HttpGetAsync(relativeUrl);
+
+            string responseString = await HttpGetAsync(relativeUrl);
             return JsonConvert.DeserializeObject<ArrayResult<T>>(responseString);
         }
         private async Task<T> HttpPostAsync<T>(string relativeUrl, string json)
@@ -462,5 +458,14 @@ namespace Microsoft.Education
             return defaultFileType;
         }
         #endregion
+
+        /// <summary>
+        /// Get an instance of EducationServiceClient
+        /// </summary>
+        public static EducationServiceClient GetEducationServiceClient(string accessToken)
+        {
+            var serviceRoot = new Uri(new Uri(Constants.Resources.MSGraph), Constants.Resources.MSGraphVersion);
+            return new EducationServiceClient(serviceRoot, () => Task.FromResult(accessToken));
+        }
     }
 }

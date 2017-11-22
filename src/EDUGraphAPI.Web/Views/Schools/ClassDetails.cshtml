@@ -5,7 +5,7 @@
 @model SectionDetailsViewModel
 @{
     ViewBag.Title = "Class Details";
-    var teachersList = Model.Section.Teachers.ToList();
+    var teachersList = Model.Class.Teachers.ToList();
 }
 @Styles.Render("~/Content/classdetail")
 
@@ -15,27 +15,23 @@
             <div class="col-md-6 secondnav">
                 <a href="/schools"> All Schools</a>
                 > @Html.ActionLink(Model.School.Name, "Classes", null, new { schoolId = Model.School.Id }, null)
-                > @Model.Section.CourseName
+                > @Model.Class.DisplayName
             </div>
         </div>
         <div class="container">
             <div class="a-heading ">@ViewBag.Title</div>
-            <div class="b-title">@Model.Section.CourseNumber | @Model.Section.DisplayName</div>
+            <div class="b-title">@Model.Class.ClassCode | @Model.Class.DisplayName</div>
         </div>
         <div class="container coursedetail">
             <div class="col-md-6">
-                <span>Course Name:</span> @Model.Section.CourseName
+                <span>Period:</span> @Model.Class.Period
                 <br />
-                <span>Description:</span> @Model.Section.CourseDescription
-                <br />
-                <span>Period:</span> @Model.Section.Period
-                <br />
-                <span>Term Name:</span> @Model.Section.TermName
+                <span>Term Name:</span> @(string.IsNullOrEmpty(Model.Class.Term.DisplayName)?"":Model.Class.Term.DisplayName)
                 <br />
                 <span>Start/Finish Date:</span>
-                <span id="termdate">@(string.IsNullOrEmpty(Model.Section.TermStartDate) ? "" : Convert.ToDateTime(Model.Section.TermStartDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
+                <span id="termsdate">@(Model.Class?.Term?.StartDate.ToString("yyyy-MM-ddTHH:mm:ss") ?? "")</span>
                 <span id="termdate-separator"> - </span>
-                <span id="termdate">@(string.IsNullOrEmpty(Model.Section.TermEndDate) ? "" : Convert.ToDateTime(Model.Section.TermEndDate).ToString("yyyy-MM-ddTHH:mm:ss"))</span>
+                <span id="termedate">@(Model.Class?.Term?.EndDate.ToString("yyyy-MM-ddTHH:mm:ss") ?? "")</span>
             </div>
             <div class="col-md-6">
                 <span>Teacher:</span>
@@ -60,7 +56,7 @@
                     <div class="close"><img src="/Images/close.png"></div>
                     <div class="title">Select a teacher</div>
                     <div class="list">
-                        @if (Model.SchoolTeachers.Count() == 0)
+                        @if (Model.SchoolTeachers ==null || Model.SchoolTeachers.Count() == 0)
                         {
                             <div > There is no data available at this time.</div>
                         }
@@ -70,8 +66,8 @@
                                 @foreach (var teacher in Model.SchoolTeachers)
                                 {
                                     <li>
-                                        <a href="@Url.Action("AddCoTeacher", new { schoolId = Model.School.Id, sectionId = Model.Section.Id, userId = teacher.O365UserId })">
-                                            <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = teacher.O365UserId })" /> @teacher.DisplayName
+                                        <a href="@Url.Action("AddCoTeacher", new { schoolId = Model.School.Id, sectionId = Model.Class.Id, userId = teacher.Id })">
+                                            <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = teacher.Id })" /> @teacher.DisplayName
                                         </a>
                                     </li>
                                 }
@@ -94,7 +90,7 @@
         </ul>
         <div class="tab-content">
             <div id="students" class="tab-pane fade in active">
-                @if (Model.Section == null || Model.Section.Students == null || Model.Section.Students.Count() == 0)
+                @if (Model.Class?.Students == null || !Model.Class.Students.Any())
                 {
                     <div class="nodata"> There is no data available for this page at this time.</div>
                 }
@@ -104,15 +100,14 @@
                         <thead>
                             <tr class="table-green-header">
                                 <th class="tdleft">student name</th>
-                                <th>grade</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var stu in Model.Section.Students)
+                            @foreach (var stu in Model.Class.Students)
                             {
                                 <tr class="tr-content">
-                                    <td><img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.O365UserId })" /> @stu.DisplayName </td>
-                                    <td>@stu.EducationGrade</td>
+                                    <td><img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.Id })" /> @stu.DisplayName </td>
                                 </tr>
                             }
                         </tbody>
@@ -182,7 +177,7 @@
                                 {
                                     @Html.ValidationSummary("", new { @class = "text-danger" })
                                     <input id="FilesToBeUploaded" name="FilesToBeUploaded" type="hidden" value="">
-                                    <input id="classId" name="classId" type="hidden" value="@Model.Section.Id" />
+                                    <input id="classId" name="classId" type="hidden" value="@Model.Class.Id" />
                                     <input id="status" name="status" type="hidden" />
                                     <input type="hidden" name="schoolId" id="schoolId" value="@Model.School.Id" />
 
@@ -278,7 +273,7 @@
                                 using (Html.BeginForm("UpdateAssignment", "Schools", FormMethod.Post, new { enctype = "multipart/form-data", id = "assignment-detail-form-teacher" }))
                                 {
                                     <input name="schoolId" type="hidden" value="@Model.School.Id" />
-                                    <input name="classId" type="hidden" value="@Model.Section.Id" />
+                                    <input name="classId" type="hidden" value="@Model.Class.Id" />
                                     <input name="assignmentId" type="hidden" />
                                     <input name="assignmentStatus" type="hidden" />
 
@@ -306,7 +301,7 @@
                                 using (Html.BeginForm("NewAssignmentSubmissionResource", "Schools", FormMethod.Post, new { enctype = "multipart/form-data", id = "assignment-detail-form-student" }))
                                 {
                                     <input name="schoolId" type="hidden" value="@Model.School.Id" />
-                                    <input name="classId" type="hidden" value="@Model.Section.Id" />
+                                    <input name="classId" type="hidden" value="@Model.Class.Id" />
                                     <input name="assignmentId" type="hidden" />
                                     <input name="submissionId" type="hidden" />
 
@@ -366,7 +361,7 @@
          
              </div>
             <div id="documents" class="tab-pane fade">
-                @if (Model.DriveItems == null || Model.DriveItems.Count() == 0)
+                @if (Model.DriveItems == null || !Model.DriveItems.Any())
                 {
                     <div class="nodata"> There is no data available for this page at this time.</div>
                 }
@@ -396,7 +391,7 @@
                                     <td>
                                         <a target="_blank" href="@doc.WebUrl">@doc.Name</a>
                                     </td>
-                                    <td>@(@doc.LastModifiedDateTime.HasValue ? @doc.LastModifiedDateTime.Value.ToString("yyyy-MM-ddTHH:mm:sszzz") : "")</td>
+                                    <td>@(@doc.LastModifiedDateTime?.ToString("yyyy-MM-ddTHH:mm:sszzz") ?? "")</td>
                                     <td>@doc.LastModifiedBy.User.DisplayName</td>
                                     <td class="space-holder right"></td>
                                 </tr>
@@ -408,7 +403,7 @@
                 <br style="clear:both" />
             </div>
             <div id="conversations" class="tab-pane fade">
-                @if (Model.Conversations == null || Model.Conversations.Count() == 0)
+                @if (Model.Conversations == null || !Model.Conversations.Any())
                 {
                     <div class="nodata"> There is no data available for this page at this time.</div>
                 }
@@ -445,34 +440,34 @@
                     }
                     else
                     {
-                        var style = string.Format("background-color:{0}", Model.MyFavoriteColor);
+                        var style = $"background-color:{Model.MyFavoriteColor}";
                         <div class="assignseat tip"><div class="greenicon" style="@style"></div>Your assigned seat </div>
                     }
                     <ul id="lstproducts">
-                        @foreach (var stu in Model.Section.Students)
+                        @foreach (var stu in Model.Class.Students)
                         {
                             var hide = stu.Position == 0 ? "hideitem" : "";
-                            <li id="@stu.O365UserId"><img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.O365UserId })" /> <span class="disname"> @stu.DisplayName </span> <span class="seated @hide">seated ✓</span> </li>
+                            <li id="@stu.Id"><img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.Id })" /> <span class="disname"> @stu.DisplayName </span> <span class="seated @hide">seated ✓</span> </li>
                         }
                     </ul>
                     <div id="hidtiles" class="hideitem">
-                        @foreach (var stu in Model.Section.Students)
+                        @foreach (var stu in Model.Class.Students)
                         {
                             var containerClass = "unsaved";
                             var style = string.Format("background-color:{0}", stu.FavoriteColor);
                             if (stu.Position != 0)
                             {
                                 containerClass = "white";
-                                if (Model.O365UserId == stu.O365UserId)
+                                if (Model.O365UserId == stu.Id)
                                 {
                                     containerClass = "green";
 
                                 }
                             }
-                            <div class="deskcontainer @containerClass" style="@style" position="@stu.Position" userid="@stu.O365UserId">
+                            <div class="deskcontainer @containerClass" style="@style" position="@stu.Position" userid="@stu.Id">
                                 <div class="deskclose"><img src="/Images/close.png"></div>
                                 <div class="deskicon">
-                                    <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.O365UserId })" />
+                                    <img src="/images/header-default.jpg" realheader="@Url.Action("UserPhoto", "Photo", new { id = stu.Id })" />
                                 </div>
                                 <div class="stuname">@stu.DisplayName</div>
                             </div>
@@ -510,7 +505,8 @@
         </div>
     </div>
 </div>
-<input type="hidden" name="hidSectionid" id="hidSectionid" value="@Model.Section.Id" />
+
+<input type="hidden" name="hidSectionid" id="hidSectionid" value="@Model.Class.Id" />
 <input type="hidden" name="hideIsStudent" id="hideIsStudent" value="@Convert.ToString(Model.IsStudent)" />
 
 @*<div id="saveResult"><div>Seating map changes saved.</div></div>*@

@@ -16,6 +16,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Education;
 
 namespace EDUGraphAPI.Web.Controllers
 {
@@ -53,7 +54,7 @@ namespace EDUGraphAPI.Web.Controllers
         {
             var userContext = await applicationService.GetUserContextAsync();
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, pageSize);
+            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId);
             return View(model);
         }
 
@@ -63,59 +64,12 @@ namespace EDUGraphAPI.Web.Controllers
         {
             var userContext = await applicationService.GetUserContextAsync();
             var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, pageSize, nextLink);
-            var sections = new List<Section>(model.Sections.Value);
-            sections.AddRange(model.MySections);
-            foreach (var section in sections)
-            {
-                if (!string.IsNullOrEmpty(section.TermStartDate))
-                {
-                    section.TermStartDate = Convert.ToDateTime(section.TermStartDate).ToString("yyyy-MM-ddTHH:mm:ss");
-                }
-                if (!string.IsNullOrEmpty(section.TermEndDate))
-                {
-                    section.TermEndDate = Convert.ToDateTime(section.TermEndDate).ToString("yyyy-MM-ddTHH:mm:ss");
-                }
-            }
+            var model = await schoolsService.GetSectionsViewModelAsync(userContext, schoolId, nextLink);
+            var classes = new List<EducationClass>(model.Classes.Value);
+            classes.AddRange(model.MyClasses);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
-        //
-        // GET: /Schools/{Id of a school}/Users
-        public async Task<ActionResult> Users(string schoolId)
-        {
-            var schoolsService = await GetSchoolsServiceAsync();
-            var userContext = await applicationService.GetUserContextAsync();
-            var model = await schoolsService.GetSchoolUsersAsync(userContext,schoolId, pageSize);
-            return View(model);
-        }
-
-        //
-        // GET: /Schools/{Id of a school}/Users/Next
-        public async Task<JsonResult> UsersNext(string schoolId, string nextLink)
-        {
-            var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolUsersAsync(schoolId, pageSize, nextLink);
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
-
-        //
-        // GET: /Schools/{Id of a school}/Students/Next
-        public async Task<JsonResult> StudentsNext(string schoolId, string nextLink)
-        {
-            var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolStudentsAsync(schoolId, pageSize, nextLink);
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
-
-        //
-        // GET: /Schools/{Id of a school}/Teachers/Next
-        public async Task<JsonResult> TeachersNext(string schoolId, string nextLink)
-        {
-            var schoolsService = await GetSchoolsServiceAsync();
-            var model = await schoolsService.GetSchoolTeachersAsync(schoolId, pageSize, nextLink);
-            return Json(model, JsonRequestBehavior.AllowGet);
-        }
 
         //
         // GET: /Schools/{Id of a school}/Classes/6510F0FC-53B3-4D9B-9742-84C9C8FA2BE4
@@ -132,7 +86,7 @@ namespace EDUGraphAPI.Web.Controllers
             model.O365UserId = userContext.User.O365UserId;
             model.MyFavoriteColor = userContext.User.FavoriteColor;
             var assignmentServices = await GetAssignmentsServiceAsync();
-            model.Assignments = await assignmentServices.GetAssignmentsByClassId(model.Section.Id);
+            model.Assignments = await assignmentServices.GetAssignmentsByClassId(model.Class.Id);
             return View(model);
         }
 
@@ -293,7 +247,8 @@ namespace EDUGraphAPI.Web.Controllers
         
         private async Task<SchoolsService> GetSchoolsServiceAsync()
         {
-            var educationServiceClient = await AuthenticationHelper.GetEducationServiceClientAsync();
+            var educationServiceClient = EducationServiceClient.GetEducationServiceClient(
+                await AuthenticationHelper.GetAccessTokenAsync(Constants.Resources.MSGraph, Permissions.Delegated));
             return new SchoolsService(educationServiceClient, dbContext);
         }
 

@@ -42,7 +42,7 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 * An O365 Education tenant with Microsoft School Data Sync enabled
     * One of the following browsers: Edge, Internet Explorer 9, Safari 5.0.6, Firefox 5, Chrome 13, or a later version of one of these browsers.
       Additionally: Developing/running this sample locally requires the following:  
-    * Visual Studio 2015 (any edition), [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409) is available for free.
+    * Visual Studio 2017 (any edition).
     * Familiarity with C#, .NET Web applications, JavaScript programming and web services.
 
 ## Register the application in Azure Active Directory
@@ -85,31 +85,10 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 
      | API                            | Application Permissions                  | Delegated Permissions                    |
      | ------------------------------ | ---------------------------------------- | ---------------------------------------- |
-     | Microsoft Graph                | Read all users' full profiles<br> Read directory data<br> Read all groups | Read directory data<br>Access directory as the signed in user<br>Sign users in<br> Have full access to all files user can access<br> Have full access to user files<br> Read users' class assignments without grades<br> Read and write users' class assignments without grades<br> Read users' class assignments and their grades<br> Read and write users' class assignments and their grades |
+     | Microsoft Graph                | Read all users' full profiles<br> Read directory data | Read directory data<br>Access directory as the signed in user<br>Sign users in |
      | Windows Azure Active Directory | Read directory data                      | Sign in and read user profile<br>Read and write directory data |
 
      ![](/Images/aad-create-app-06.png)
-
-     ​
-
-     **Application Permissions**
-
-     | Permission                    | Description                              | Admin Consent Required |
-     | ----------------------------- | ---------------------------------------- | ---------------------- |
-     | Read all users' full profiles | Allows the app to read the full set of profile properties, group membership, reports and managers of other users in your organization, without a signed-in user. | Yes                    |
-     | Read directory data           | Allows the app to read data in your organization's directory, such as users, groups and apps, without a signed-in user. | Yes                    |
-
-     **Delegated Permissions**
-
-     | Permission                             | Description                              | Admin Consent Required |
-     | -------------------------------------- | ---------------------------------------- | ---------------------- |
-     | Read directory data                    | Allows the app to read data in your organization's directory, such as users, groups and apps. | Yes                    |
-     | Access directory as the signed in user | Allows the app to have the same access to information in the directory as the signed-in user. | Yes                    |
-     | Sign users in                          | Allows users to sign in to the app with their work or school accounts and allows the app to see basic user profile information. | No                     |
-     | Sign in and read user profile          | Allows users to sign-in to the app, and allows the app to read the profile of signed-in users. It also allows the app to read basic company information of signed-in users. | No                     |
-     | Read and write directory data          | Allows the app to read and write data in your organization's directory, such as users, and groups.  It does not allow the app to delete users or groups, or reset user passwords. | Yes                    |
-
-     ​
 
    * Click **Keys**, then add a new key:
 
@@ -143,9 +122,9 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 
 ## Build and debug locally
 
-This project can be opened with the edition of Visual Studio 2015 you already have, or download and install the Community edition to run, build and/or develop this application locally.
+This project can be opened with the edition of Visual Studio 2017 you already have, or download and install the Community edition to run, build and/or develop this application locally.
 
-- [Visual Studio 2015 Community](https://go.microsoft.com/fwlink/?LinkId=691978&clcid=0x409)
+
 
 Debug the **EDUGraphAPI.Web**:
 
@@ -353,24 +332,6 @@ A row in this table represents a tenant in AAD.
 | TenantId         | Guid of the tenant                   |
 | Name             | Name of the tenant                   |
 | IsAdminConsented | Is the tenant consented by any admin |
-
-### Admin Consent Flow
-
-App-only permissions always require a tenant administrator’s consent. If your application requests an app-only permission and a user tries to sign in to the application, an error message will be displayed saying the user isn’t able to consent.
-
-Certain delegated permissions also require a tenant administrator’s consent. For example, the ability to write back to Azure AD as the signed in user requires a tenant administrator’s consent. Like app-only permissions, if an ordinary user tries to sign in to an application that requests a delegated permission that requires administrator consent, your application will receive an error. Whether or not a permission requires admin consent is determined by the developer that published the resource, and can be found in the documentation for the resource.
-
-If your application uses permissions that require admin consent, you need to have a gesture such as a button or link where the admin can initiate the action. The request your application sends for this action is a usual OAuth2/OpenID Connect authorization request, but that also includes the `prompt=admin_consent` query string parameter. Once the admin has consented and the service principal is created in the customer’s tenant, subsequent sign-in requests do not need the `prompt=admin_consent` parameter. Since the administrator has decided the requested permissions are acceptable, no other users in the tenant will be prompted for consent from that point forward.
-
-**Check Consented Flow**
-
-![](Images/admin-consent-check-flow.png)
-
-**Admin Consent Flow**
-
-![](Images/admin-consent-flow.png)
-
-
 
 ### Authentication Flows
 

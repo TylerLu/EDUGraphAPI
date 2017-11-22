@@ -42,7 +42,6 @@
                     {
                         var schoolId = routeData.GetRequiredString("schoolId");
                         <li>@Html.ActionLink("Classes", "Classes", "Schools", new { schoolId = schoolId }, null)</li>
-                        <li>@Html.ActionLink("Teachers & Students", "Users", "Schools", new { schoolId = schoolId }, null)</li>
                     }
                     @if (User.Identity.IsAuthenticated)
                     {

@@ -2,22 +2,26 @@
  *   * Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.  
  *   * See LICENSE in the project root for license information.  
  */
+
+using Newtonsoft.Json;
+
 namespace EDUGraphAPI.DataSync
 {
     /// <summary>
-    /// An instance of the class represents a user in Azure AD.
+    /// An instance of the class represents a user in Office 365 Education.
     /// </summary>
-    /// <remarks>
-    /// Notice that the properties used to track changes are virtual.
-    /// </remarks>
     public class User
     {
-        public string ObjectId { get; set; }
+        public User()
+        {
+        }
 
-        public virtual string JobTitle { get; set; }
+        public string Id { get; set; }
 
-        public virtual string Department { get; set; }
+        public string JobTitle { get; set; }
 
-        public virtual string Mobile { get; set; }
+        public string Department { get; set; }
+
+        public string MobilePhone { get; set; }
     }
 }
