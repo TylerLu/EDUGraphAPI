@@ -419,71 +419,40 @@ In this sample we use the classes below, which are based on a common interface, 
 
 The **IGraphClient** interface defines two method: **GeCurrentUserAsync** and **GetTenantAsync**.
 
-**AADGraphClient** and **MSGraphClient** implement the **IGraphClient** interface with Azure AD Graph and Microsoft Graph client libraries separately.
+**MSGraphClient** implement the **IGraphClient** interface with Microsoft Graph client libraries.
 
-The interface and the two classes resides in **/Services/GraphClients** folder of the web app. Some code is highlighted below to show how to get user and tenant with the two kinds of Graph APIs.
-
-**Azure AD Graph** - AADGraphClient.cs
-
-~~~c#
-public async Task<UserInfo> GetCurrentUserAsync()
-{
-    var me = await activeDirectoryClient.Me.ExecuteAsync();
-    return new UserInfo
-    {
-        Id = me.ObjectId,
-        GivenName = me.GivenName,
-        Surname = me.Surname,
-        UserPrincipalName = me.UserPrincipalName,
-        Roles = await GetRolesAsync(me)
-    };
-}
-~~~
-
-~~~c#
-public async Task<TenantInfo> GetTenantAsync(string tenantId)
-{
-    var tenant = await activeDirectoryClient.TenantDetails
-        .Where(i => i.ObjectId == tenantId)
-        .ExecuteSingleAsync();
-    return new TenantInfo
-    {
-        Id = tenant.ObjectId,
-        Name = tenant.DisplayName
-    };
-}
-
-~~~
+The interface and the graph client class resides in **/Services/GraphClients** folder of the web app. Some code is highlighted below to show how to get user and tenant.
 
 **Microsoft Graph** - MSGraphClient.cs
 
 ~~~c#
-public async Task<UserInfo> GetCurrentUserAsync()
-{
-    var me = await graphServiceClient.Me.Request()
-        .Select("id,givenName,surname,userPrincipalName,assignedLicenses")
-        .GetAsync();
-    return new UserInfo
-    {
-        Id = me.Id,
-        GivenName = me.GivenName,
-        Surname = me.Surname,
-        UserPrincipalName = me.UserPrincipalName,
-        Roles = await GetRolesAsync(me)
-    };
-}
+        public async Task<UserInfo> GetCurrentUserAsync()
+        {
+            var me = await graphServiceClient.Me.Request()
+                .Select("id,givenName,surname,userPrincipalName,assignedLicenses")
+                .GetAsync();
+            return new UserInfo
+            {
+                Id = me.Id,
+                GivenName = me.GivenName,
+                Surname = me.Surname,
+                Mail = me.Mail,
+                UserPrincipalName = me.UserPrincipalName,
+                Roles = await GetRolesAsync(me)
+            };
+        }
 ~~~
 
 ~~~c#
-public async Task<TenantInfo> GetTenantAsync(string tenantId)
-{
-    var tenant = await graphServiceClient.Organization[tenantId].Request().GetAsync();
-    return new TenantInfo
-    {
-        Id = tenant.Id,
-        Name = tenant.DisplayName
-    };
-}
+        public async Task<TenantInfo> GetTenantAsync(string tenantId)
+        {
+            var tenant = await graphServiceClient.Organization[tenantId].Request().GetAsync();
+            return new TenantInfo
+            {
+                Id = tenant.Id,
+                Name = tenant.DisplayName
+            };
+        }
 
 ~~~
 
