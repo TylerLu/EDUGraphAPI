@@ -563,15 +563,7 @@
               }
             ]
           },
-          {
-            "url": "/blob/master/src/EDUGraphAPI.Web/Services/GraphClients/AADGraphClient.cs",
-            "methods": [
-              {
-                "title": "GetTenantAsync",
-                "description": "Get tenant information from AAD."
-              }
-            ]
-          },
+        
           {
             "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
             "methods": [
@@ -611,15 +603,6 @@
                 "description": "Get current user from context."
               }
             ]
-          },
-          {
-            "url": "/blob/master/src/EDUGraphAPI.Web/Services/GraphClients/AADGraphClient.cs",
-            "methods": [
-              {
-                "title": "GetCurrentUserAsync",
-                "description": "Get current user from AAD."
-              }
-            ]
           }
         ]
       }
@@ -642,15 +625,7 @@
               }
             ]
           },
-          {
-            "url": "/blob/master/src/EDUGraphAPI.Web/Services/GraphClients/AADGraphClient.cs",
-            "methods": [
-              {
-                "title": "GetCurrentUserAsync",
-                "description": "Get current user from context."
-              }
-            ]
-          },
+         
           {
             "url": "/blob/master/src/EDUGraphAPI.Web/Services/ApplicationService.cs",
             "methods": [

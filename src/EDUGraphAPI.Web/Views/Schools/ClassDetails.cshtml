@@ -29,9 +29,9 @@
                 <span>Term Name:</span> @(string.IsNullOrEmpty(Model.Class.Term.DisplayName)?"":Model.Class.Term.DisplayName)
                 <br />
                 <span>Start/Finish Date:</span>
-                <span id="termsdate">@(Model.Class?.Term?.StartDate.ToString("yyyy-MM-ddTHH:mm:ss") ?? "")</span>
-                <span id="termdate-separator"> - </span>
-                <span id="termedate">@(Model.Class?.Term?.EndDate.ToString("yyyy-MM-ddTHH:mm:ss") ?? "")</span>
+                @(Model.Class?.Term?.StartDate.ToString("MMMM dd yyyy") ?? "")
+                - 
+                @(Model.Class?.Term?.EndDate.ToString("MMMM dd yyyy") ?? "")
             </div>
             <div class="col-md-6">
                 <span>Teacher:</span>

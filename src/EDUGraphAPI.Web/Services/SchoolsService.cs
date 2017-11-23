@@ -218,7 +218,7 @@ namespace EDUGraphAPI.Web.Services
         {
             var myClasses = await educationServiceClient.GetMyClassesAsync();
             return myClasses
-                .Select(i => i.ExternalName)
+                .Select(i => i.DisplayName)
                 .ToArray();
         }
     }

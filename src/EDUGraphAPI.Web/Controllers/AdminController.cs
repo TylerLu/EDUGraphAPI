@@ -101,7 +101,19 @@ namespace EDUGraphAPI.Web.Controllers
                .Where(i => i.AppId == Constants.AADClientId)
                .ExecuteSingleAsync();
             if (servicePrincipal != null)
-                await servicePrincipal.DeleteAsync();
+            {
+                try
+                {
+                    await servicePrincipal.DeleteAsync();
+                }
+                catch (Exception ex)
+                {
+                }
+               
+            }
+
+            
+
 
             var adminContext = await applicationService.GetAdminContextAsync();
             if (adminContext.Organization != null)

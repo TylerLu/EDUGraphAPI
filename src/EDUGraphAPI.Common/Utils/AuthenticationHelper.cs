@@ -95,7 +95,7 @@ namespace EDUGraphAPI.Utils
         /// </summary>
         public static GraphServiceClient GetGraphServiceClient(AuthenticationResult result)
         {
-            var serviceRoot = Constants.Resources.MSGraph + "/" + Constants.Resources.MSGraphVersion;
+            var serviceRoot = Constants.Resources.MSGraph + "/v1.0/" + ClaimsPrincipal.Current.GetTenantId();
             return new GraphServiceClient(serviceRoot, new BearerAuthenticationProvider(result.AccessToken));
         }
 

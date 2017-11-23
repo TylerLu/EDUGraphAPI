@@ -262,7 +262,10 @@ textarea {
 .sections .seemore span.disabled, .sections .seemore span.nomore{cursor:default; color:#c2c2c2}
 
 /*section detail*/
-.b-title{font-size:24px;color:#666565;}
+.b-title {
+    font-size: 24px;
+    color: #666565;
+}
 .class-details .b-title{font-family:'Helvetica Neue LT Std Th'}
 .coursedetail {position: relative;}
 .coursedetail .col-md-6{padding:12px 0 6px 0;}
