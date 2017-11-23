@@ -85,10 +85,31 @@ EDUGraphAPI is based on ASP.NET MVC and [ASP.NET Identity](https://www.asp.net/i
 
      | API                            | Application Permissions                  | Delegated Permissions                    |
      | ------------------------------ | ---------------------------------------- | ---------------------------------------- |
-     | Microsoft Graph                | Read all users' full profiles<br> Read directory data | Read directory data<br>Access directory as the signed in user<br>Sign users in |
+     | Microsoft Graph                | Read all users' full profiles<br> Read directory data<br> Read all groups | Read directory data<br>Access directory as the signed in user<br>Sign users in<br> Have full access to all files user can access<br> Have full access to user files<br> Read users' class assignments without grades<br> Read and write users' class assignments without grades<br> Read users' class assignments and their grades<br> Read and write users' class assignments and their grades |
      | Windows Azure Active Directory | Read directory data                      | Sign in and read user profile<br>Read and write directory data |
 
      ![](/Images/aad-create-app-06.png)
+
+     ​
+
+     **Application Permissions**
+
+     | Permission                    | Description                              | Admin Consent Required |
+     | ----------------------------- | ---------------------------------------- | ---------------------- |
+     | Read all users' full profiles | Allows the app to read the full set of profile properties, group membership, reports and managers of other users in your organization, without a signed-in user. | Yes                    |
+     | Read directory data           | Allows the app to read data in your organization's directory, such as users, groups and apps, without a signed-in user. | Yes                    |
+
+     **Delegated Permissions**
+
+     | Permission                             | Description                              | Admin Consent Required |
+     | -------------------------------------- | ---------------------------------------- | ---------------------- |
+     | Read directory data                    | Allows the app to read data in your organization's directory, such as users, groups and apps. | Yes                    |
+     | Access directory as the signed in user | Allows the app to have the same access to information in the directory as the signed-in user. | Yes                    |
+     | Sign users in                          | Allows users to sign in to the app with their work or school accounts and allows the app to see basic user profile information. | No                     |
+     | Sign in and read user profile          | Allows users to sign-in to the app, and allows the app to read the profile of signed-in users. It also allows the app to read basic company information of signed-in users. | No                     |
+     | Read and write directory data          | Allows the app to read and write data in your organization's directory, such as users, and groups.  It does not allow the app to delete users or groups, or reset user passwords. | Yes                    |
+
+     ​
 
    * Click **Keys**, then add a new key:
 
@@ -333,6 +354,16 @@ A row in this table represents a tenant in AAD.
 | Name             | Name of the tenant                   |
 | IsAdminConsented | Is the tenant consented by any admin |
 
+### Admin Consent Flow
+
+App-only permissions always require a tenant administrator’s consent. If your application requests an app-only permission and a user tries to sign in to the application, an error message will be displayed saying the user isn’t able to consent.
+
+Certain delegated permissions also require a tenant administrator’s consent. For example, the ability to write back to Azure AD as the signed in user requires a tenant administrator’s consent. Like app-only permissions, if an ordinary user tries to sign in to an application that requests a delegated permission that requires administrator consent, your application will receive an error. Whether or not a permission requires admin consent is determined by the developer that published the resource, and can be found in the documentation for the resource.
+
+If your application uses permissions that require admin consent, you need to have a gesture such as a button or link where the admin can initiate the action. The request your application sends for this action is a usual OAuth2/OpenID Connect authorization request, but that also includes the `prompt=admin_consent` query string parameter. Once the admin has consented and the service principal is created in the customer’s tenant, subsequent sign-in requests do not need the `prompt=admin_consent` parameter. Since the administrator has decided the requested permissions are acceptable, no other users in the tenant will be prompted for consent from that point forward.
+
+
+
 ### Authentication Flows
 
 There are 4 authentication flows in this project.
@@ -471,57 +502,64 @@ In the sample, the **Microsoft.Education** Class Library project was created to 
 **Get schools**
 
 ~~~c#
-// https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-all-schools
 public async Task<School[]> GetSchoolsAsync()
 {
-    var schools = await HttpGetArrayAsync<School>("administrativeUnits");
-    return schools.Where(c => c.EducationObjectType == "School").ToArray();
+    var schools = await HttpGetArrayAsync<EducationSchool>("education/schools");
+    return schools.ToArray();
 
 }
 ~~~
 
-~~~c#
-// https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-a-school
-public Task<School> GetSchoolAsync(string objectId)
-{
-     return HttpGetObjectAsync<School>($"administrativeUnits/{objectId}");
 
-}
-~~~
 
 **Get sections**
 
 ~~~c#
-// https://msdn.microsoft.com/office/office365/api/school-rest-operations#get-sections-within-a-school
-public Task<Section[]> GetAllSectionsAsync(string schoolId)
+ public async Task<ArrayResult<EducationClass>> GetAllClassesAsync(string schoolId, string nextLink)
 {
-            var relativeUrl = $"groups?$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType%20eq%20'Section'%20and%20extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId%20eq%20'{schoolId}'";
-            return HttpGetArrayAsync<Section>(relativeUrl, top, nextLink);
+           if (string.IsNullOrEmpty(schoolId))
+            {
+                return new ArrayResult<EducationClass>
+                {
+                    Value = new EducationClass[] { },
+                     NextLink = nextLink
+                };
+            }
+            else
+            {
+                var relativeUrl = $"education/schools/{schoolId}/classes?$top=12";
+                return await HttpGetArrayAsync<EducationClass>(relativeUrl, nextLink);
+
+        
+            }
 
 }
 ~~~
 
 ```c#
-public async Task<Section[]> GetMySectionsAsync(string schoolId)
-{
- 	var sections = await GetMySectionsAsync(true);
-    return sections
-                .Where(i => i.SchoolId == schoolId)
-                .ToArray();
-}
+        public async Task<EducationClass[]> GetMyClassesAsync(bool loadMembers = false, string expandField = "members")
+        {
+            var relativeUrl = $"education/me/classes";
+
+            // Important to do this in one round trip, not in a sequence of calls.
+            if (loadMembers)
+            {
+                relativeUrl += "?$expand=" + expandField;
+            }
+
+            var memberOf = await HttpGetArrayAsync<EducationClass>(relativeUrl);
+            var classes = memberOf.ToArray();
+
+            return classes;
+        }
 ```
-```c#
-// https://msdn.microsoft.com/office/office365/api/section-rest-operations#get-a-section
-public async Task<Section> GetSectionAsync(string sectionId)
-{
-    return await HttpGetObjectAsync<Section>($"groups/{sectionId}?$expand=members");
-}
-```
+
+
 Below are some screenshots of the sample app that show the education data.
 
 ![](Images/edu-schools.png)
 
-![](Images/edu-users.png)
+![(Images/edu-users.png)
 
 ![](Images/edu-classes.png)
 

@@ -86,9 +86,7 @@ $(document).ready(function () {
                     tile.appendTo(tileContainer);
                     var tileDetail = $('<div class="detail" style="display: none;">' +
                                             '<h5>Course Id:</h5>' +
-                                            '<h6>' + s.ClassNumber + '</h6>' +
-                                            '<h5>Description:</h5>' +
-                                            '<h6>' + s.Description + '</h6>' +
+                                            '<h6>' + s.ClassCode + '</h6>' +
                                             '<h5>Teachers:</h5>' +
                                             ((s.Teachers instanceof Array) ?
                                                 s.Teachers.reduce(function (accu, cur) {
@@ -105,7 +103,9 @@ $(document).ready(function () {
                                             ('<h6><span id="termdate">' + s.Term.StartDate + '</span>' +
                                             '<span> - </span>' +
                                             '<span id="termdate">' + s.Term.EndDate + '</span>' +
-                                            '</h6>') : '') +
+                                '</h6>') : '') +
+                        '<h5>PERIOD:</h5>' +
+                        '<h6>' + (s.Period ? s.Period:"") + '</h6>' +
                                         '</div>');
                     tileDetail.appendTo(newTile);
                     newTiles = newTiles.add(newTile);
