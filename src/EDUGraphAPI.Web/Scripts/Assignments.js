@@ -7,8 +7,9 @@
         storedFilesCount:0,        
         iniAssignments: function () {
             $(".assignment-alert").hide();
-            $("a.detaillink").click(function () {
-                event.preventDefault();
+            $("a.detaillink").click(function (e) {
+                var theEvent = window.event || e; 
+                theEvent.preventDefault();
                 _assignment_api.resetAssignmentDetailForm();
 
                 var assignmentId = $(this).data("id");
@@ -30,8 +31,9 @@
                 }
 
             });
-            $("a.submissionslink").click(function () {
-                event.preventDefault();
+            $("a.submissionslink").click(function (e) {
+                var theEvent = window.event || e;
+                theEvent.preventDefault();
                 var assignmentId = $(this).data("id");
                 var assignmentDueDate = $(this).data("duedate");
                 var assignmentTitle = $(this).data("title");
