@@ -164,8 +164,8 @@ else
             <span> - </span>
             <span id="termdate">@(section.Term == null ? "" : section.Term.EndDate.ToString("yyyy-MM-ddTHH:mm:ss"))</span>
         </h6>
-        <h5>Period:</h5>
-        <h6>@(section.Period)</h6>
+        @*<h5>Period:</h5>
+        <h6>@(section.Period)</h6>*@
     </div>
 }
 @Scripts.Render("~/bundles/sections")

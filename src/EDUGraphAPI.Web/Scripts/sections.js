@@ -104,8 +104,8 @@ $(document).ready(function () {
                                             '<span> - </span>' +
                                             '<span id="termdate">' + s.Term.EndDate + '</span>' +
                                 '</h6>') : '') +
-                        '<h5>PERIOD:</h5>' +
-                        '<h6>' + (s.Period ? s.Period:"") + '</h6>' +
+                        //'<h5>PERIOD:</h5>' +
+                        //'<h6>' + (s.Period ? s.Period:"") + '</h6>' +
                                         '</div>');
                     tileDetail.appendTo(newTile);
                     newTiles = newTiles.add(newTile);

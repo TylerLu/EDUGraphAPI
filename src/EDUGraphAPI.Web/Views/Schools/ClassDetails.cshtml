@@ -24,8 +24,8 @@
         </div>
         <div class="container coursedetail">
             <div class="col-md-6">
-                <span>Period:</span> @Model.Class.Period
-                <br />
+                @*<span>Period:</span> @Model.Class.Period
+                <br />*@
                 <span>Term Name:</span> @(string.IsNullOrEmpty(Model.Class.Term.DisplayName)?"":Model.Class.Term.DisplayName)
                 <br />
                 <span>Start/Finish Date:</span>
