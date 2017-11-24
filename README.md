@@ -528,7 +528,7 @@ Below are some screenshots of the sample app that show the education data.
 
 ![](Images/edu-schools.png)
 
-![(Images/edu-users.png)
+
 
 ![](Images/edu-classes.png)
 
