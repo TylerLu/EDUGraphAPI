@@ -201,12 +201,19 @@ namespace EDUGraphAPI.Web.Controllers
             string[] ids = GetIdsFromResourceFolder(resourceFolder);
             var exsitItems = await graphServiceClient.Drives[ids[0]].Items[ids[1]].Children.Request().Filter($"Name eq '{item.FileName}'").GetAsync();
             string itemId = string.Empty;
-            if(exsitItems.Count == 0)
+            string[] separatingChars = { "\\" };
+            string filename = item.FileName;
+            if (filename.IndexOf("\\") >= 0)
+            {
+                var a = filename.Split(separatingChars, StringSplitOptions.None);
+                filename = a[a.Length - 1];
+            }
+            if (exsitItems.Count == 0)
             {
                 var newItem = await graphServiceClient.Drives[ids[0]]
                             .Items[ids[1]].Children.Request().AddAsync(new DriveItem
                             {
-                                Name = item.FileName,
+                                Name = filename,
                                 File = new Microsoft.Graph.File()
                             });
                 itemId = newItem.Id;

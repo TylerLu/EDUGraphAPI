@@ -60,10 +60,10 @@
             $("#assignment-detail-form .btn-upload").click(function () {
                 $("#assignment-detail-form .resource-upload input:last-child").click();
             });
-            $("input[id^='newResourceFileCtrl']").change(function (e) {
+            $("input[id^='newResourceFileCtrl']").change(function (event) {
                 AssignmentPlugin.newResourceFileChange(event)
             });
-            $("input[id^='newHandInResourceFileCtrl']").change(function (e) {
+            $("input[id^='newHandInResourceFileCtrl']").change(function (event) {
                 AssignmentPlugin.newResourceFileChange(event)
             });
 
