@@ -218,6 +218,7 @@ namespace Microsoft.Education
             assignmentObject["displayName"] = assignment.DisplayName;
             assignmentObject["status"] = assignment.Status;
             assignmentObject["dueDateTime"] = assignment.DueDateTime;
+            assignmentObject["allowStudentsToAddResourcesToSubmission"] = assignment.AllowStudentsToAddResourcesToSubmission;
             var assignTo = new JObject();
             assignTo["@odata.type"] = "#microsoft.graph.educationAssignmentClassRecipient";
             assignmentObject["assignTo"] = assignTo;
@@ -311,6 +312,12 @@ namespace Microsoft.Education
             return HttpGetObjectAsync<Assignment>($"education/classes/{sectionId}/assignments/{assignmentId}");
         }
 
+        public Task<ResourcesFolder> GetAssignmentResourceFolder(string sectionId, string assignmentId)
+        {
+            return HttpGetObjectAsync<ResourcesFolder>($"education/classes/{sectionId}/assignments/{assignmentId}/GetResourcesFolderUrl");
+
+        }
+
         /// <summary>
         /// Get resources of an assignment.
         /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationsubmission_list_resources.md
@@ -322,6 +329,9 @@ namespace Microsoft.Education
         {
             return HttpGetArrayAsync<EducationAssignmentResource>($"education/classes/{sectionId}/assignments/{assignmentId}/resources");
         }
+
+
+
         /// <summary>
         /// Get submissions of an assignment.
         /// Reference URL: https://github.com/OfficeDev/O365-EDU-Tools/blob/master/EDUGraphAPIs/Assignments/api/educationassignment_list_submissions.md
@@ -333,6 +343,8 @@ namespace Microsoft.Education
         {
             return HttpGetArrayAsync<Submission>($"education/classes/{sectionId}/assignments/{assignmentId}/submissions");
         }
+
+
 
         /// <summary>
         /// Get a user's assignment submissions.

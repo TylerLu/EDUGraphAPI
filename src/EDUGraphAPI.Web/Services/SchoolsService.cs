@@ -74,6 +74,13 @@ namespace EDUGraphAPI.Web.Services
             return result;
         }
 
+        public async Task<ResourcesFolder> GetAssignmentResourceFolderURL(string sectionId, string assignmentId)
+        {
+            var result = await educationServiceClient.GetAssignmentResourceFolder(sectionId, assignmentId);
+            return result;
+        }
+
+
         public async Task<Submission[]> GetAssignmentSubmissions(string sectionId, string assignmentId)
         {
             var result = await educationServiceClient.GetAssignmentSubmissionsAsync(sectionId, assignmentId);

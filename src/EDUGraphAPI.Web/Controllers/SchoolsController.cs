@@ -133,12 +133,14 @@ namespace EDUGraphAPI.Web.Controllers
             {
                 await assignmentServices.PublishAssignmentAsync(classId, assignment.Id);
             }
+            var resourceFolder = await assignmentServices.GetAssignmentResourceFolderURL(classId, assignment.Id);
+
             var graphServiceClient = await AuthenticationHelper.GetGraphAssignmentServiceClientAsync();
             foreach (HttpPostedFileBase item in fileUpload)
             {
                 if (item != null)
                 {
-                    DriveItem file = await UploadFile(classId, graphServiceClient, item,assignment.ResourcesFolder.Odataid);
+                    DriveItem file = await UploadFile(classId, graphServiceClient, item, resourceFolder.ResourceFolderURL);
                     string resourceUrl = string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}",file.ParentReference.DriveId,file.Id);
                     await assignmentServices.AddAssignmentResourcesAsync(classId, assignment.Id, file.Name, resourceUrl);
                 }
@@ -155,18 +157,17 @@ namespace EDUGraphAPI.Web.Controllers
             var assignmentServices = await GetAssignmentsServiceAsync();
             var graphServiceClient = await AuthenticationHelper.GetGraphAssignmentServiceClientAsync();
 
-            string resourcesFolderOdataid = string.Empty;
             var submissions = await assignmentServices.GetAssignmentSubmissionByUserAsync(classId, assignmentId, userContext.User.O365UserId);
-            var submission = submissions.Length > 0 ? submissions[0] : null;
-            resourcesFolderOdataid = submission.ResourcesFolder.Odataid;
-
-            foreach (HttpPostedFileBase item in newResource)
+            if (submissions.Length > 0)
             {
-                if (item != null)
+                foreach (HttpPostedFileBase item in newResource)
                 {
-                    DriveItem file = await UploadFile(classId, graphServiceClient, item, resourcesFolderOdataid);
-                    string resourceUrl = string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}", file.ParentReference.DriveId, file.Id);
-                    await assignmentServices.AddSubmissionResourceAsync(classId, assignmentId, submissionId, file.Name, resourceUrl);
+                    if (item != null)
+                    {
+                        DriveItem file = await UploadFile(classId, graphServiceClient, item, submissions[0].ResourcesFolderUrl);
+                        string resourceUrl = string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}", file.ParentReference.DriveId, file.Id);
+                        await assignmentServices.AddSubmissionResourceAsync(classId, assignmentId, submissionId, file.Name, resourceUrl);
+                    }
                 }
             }
             return RedirectToAction("ClassDetails", new { schoolId = schoolId, sectionId = classId, tab = "assignments" });
@@ -181,10 +182,11 @@ namespace EDUGraphAPI.Web.Controllers
                 assignment = await assignmentServices.PublishAssignmentAsync(classId, assignmentId);
             }
             var graphServiceClient = await AuthenticationHelper.GetGraphAssignmentServiceClientAsync();
+            var resourceFolder = await assignmentServices.GetAssignmentResourceFolderURL(classId, assignmentId);
             foreach (HttpPostedFileBase item in newResource){
                 if (item != null)
                 {
-                    DriveItem file = await UploadFile(classId, graphServiceClient, item, assignment.ResourcesFolder.Odataid);
+                    DriveItem file = await UploadFile(classId, graphServiceClient, item, resourceFolder.ResourceFolderURL);
                     string resourceUrl = string.Format("https://graph.microsoft.com/v1.0/drives/{0}/items/{1}", file.ParentReference.DriveId, file.Id);
                     await assignmentServices.AddAssignmentResourcesAsync(classId, assignment.Id, file.Name, resourceUrl);
                 }

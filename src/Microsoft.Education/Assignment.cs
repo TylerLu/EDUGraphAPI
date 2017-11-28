@@ -43,8 +43,7 @@ namespace Microsoft.Education.Data
         [JsonProperty("status")]
         public string Status { get; set; }
 
-        [JsonProperty("resourcesFolder")]
-        public ResourcesFolder ResourcesFolder { get; set; }
+
 
         [JsonProperty("resources")]
         public List<ResourceContainer> Resources { get; set; }
@@ -76,6 +75,10 @@ namespace Microsoft.Education.Data
     {
         [JsonProperty("odataid")]
         public string Odataid { get; set; }
+
+        [JsonProperty("value")]
+        public string ResourceFolderURL { get; set; }
+
     }
 
     public class EducationAssignmentResource
@@ -120,6 +123,10 @@ namespace Microsoft.Education.Data
 
         [JsonProperty("resourcesFolder")]
         public ResourcesFolder ResourcesFolder { get; set; }
+
+        
+        [JsonProperty("resourcesFolderUrl")]
+        public string ResourcesFolderUrl { get; set; }
 
         public List<EducationSubmissionResource> Resources { get; set; }
     }

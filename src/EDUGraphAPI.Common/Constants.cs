@@ -34,12 +34,7 @@ namespace EDUGraphAPI
             public const string AADGraph = "https://graph.windows.net";
             public const string MSGraph = "https://graph.microsoft.com";
 
-            //public const string MSGraphVersion = "testEduApi";
             public const string MSGraphVersion = "beta";
-
-            public const string Assignment = "https://canary.graph.microsoft.com";
-            public const string AssignmentVersion = "testeduapi";
-
         }
 
         public static class Roles
