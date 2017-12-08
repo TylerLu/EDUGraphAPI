@@ -35,8 +35,9 @@ namespace EDUGraphAPI.DifferentialQuery
             }
 
             JObject obj = JObject.Load(reader);
+            JToken theValue;
 
-            if (obj.TryGetValue("@removed", out JToken theValue))
+            if (obj.TryGetValue("@removed", out theValue))
             {
                 existingDelta.Removed = theValue.ToObject<DeltaRemovedData>(serializer);
                 existingDelta.Id = obj.Property("id").Value.ToObject<string>(serializer);
